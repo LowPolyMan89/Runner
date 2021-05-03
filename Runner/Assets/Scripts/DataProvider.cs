@@ -234,6 +234,7 @@ public class Profile
     public void SaveProfile(string profileID, object obj)
     {
         string json = JsonUtility.ToJson(obj);
+
         SaveProfileToDisk(profileID, json);
     }
     public string LoadProfile()
