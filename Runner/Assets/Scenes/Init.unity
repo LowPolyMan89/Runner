@@ -154,13 +154,31 @@ MonoBehaviour:
   SelectedPlayerId: 
   Profile:
     ProfileId: 
+    PlayerName: 
     PlayerMoney: 0
     PlayerStars: 0
+    LastSaveDate: 2021.05.03 04:59:36
     OpenedPlayersId: []
-    OpenedItemsId: []
+    Collection: []
     LevelDatas: []
+    BonusLevelDatas: []
+    Items: []
+    Offers:
+    - OfferId: 
+      StartDate: 
+      EndDate: 
+      StartTime: 0
+      Duration: 0
+      isActive: 0
+    Events: []
+    LastSaveTime: 0
+    LevelWinStrick: 0
+    BonusLevelWinStrick: 0
+    InstallDate: 
+    AllTimeAfterInstall: 
   ProfileID: 
   EventManager: {fileID: 0}
+  LastSessionTime: 0
 --- !u!4 &1037829592
 Transform:
   m_ObjectHideFlags: 0

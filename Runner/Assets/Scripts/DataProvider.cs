@@ -14,6 +14,10 @@ public class DataProvider : MonoBehaviour
     public Profile Profile;
     public string ProfileID;
     public EventManager EventManager;
+    public float LastSessionTime;
+    DateTime a;
+    DateTime b;
+    TimeSpan s;
 
     private void Awake()
     {
@@ -26,8 +30,38 @@ public class DataProvider : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    [ContextMenu("TestTimeSpan")]
+    public float GetTimeSpan(float time)
+    {
+        b = DateTime.Now;
+        s = b - a;
+        return (float)s.TotalSeconds;
+    }
+    public string GetTimeSpan(string date)
+    {
+        b = DateTime.Now;
+        s = b - a;
+        return s.ToString();
+    }
+
+    public DateTime GetTimeSpan(TimeSpan span)
+    {
+        b = DateTime.Now;
+        DateTime s = b + span;
+        return s;
+    }
+
+    public string GetAllTime(string installDate)
+    {
+        DateTime a = DateTime.Now; // текущая дата
+        DateTime b = DateTime.Parse(installDate); // дата начала всего
+        TimeSpan c = b - a; // прошедшее время сессии
+        return c.ToString();
+    }
+
     private void Start()
     {
+        a = DateTime.Now;
 
         EventManager.OnSaveLoadAction += SaveLoad;
         EventManager.OnAddCoinAction += AddCoinToProfile;
@@ -48,13 +82,16 @@ public class DataProvider : MonoBehaviour
             LocalDataManager.SavePlayerPrefsString("ProfileID", CreateNewUserID());
             ProfileID = LocalDataManager.LoadPlayerPrefsString("ProfileID");
             Profile.ProfileId = ProfileID;
+            Profile.PlayerName = "TestPlayer";
             Profile.LevelData levelData = new Profile.LevelData();
+            Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+            Profile.InstallDate = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
             levelData.LevelNumber = 1;
             levelData.StarsCount = 0;
             Profile.PlayerMoney = 100;
             Profile.LevelDatas.Add(levelData);
             Profile.OpenedPlayersId.Add("1");
-            Profile.OpenedItemsId.Add("TestItem");
+            Profile.Collection.Add("TestItem");
 
             if (!File.Exists(Application.persistentDataPath + LocalDataManager.LoadPlayerPrefsString("ProfileID")))
             {
@@ -70,12 +107,17 @@ public class DataProvider : MonoBehaviour
         SceneManager.LoadScene("Lobby");
     }
 
+
     public SaveLoadEnum SaveLoad(SaveLoadEnum saveLoadEnum)
     {
         SaveLoadEnum _saveLoadEnum = saveLoadEnum;
 
         if(_saveLoadEnum == SaveLoadEnum.Save)
         {
+            Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+            Profile.LastSaveTime += GetTimeSpan(1);
+            LastSessionTime = GetTimeSpan(1);
+            Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
             SaveProfile();
         }
         else
@@ -115,6 +157,10 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("save")]
     public void SaveProfile()
     {
+        Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+        Profile.LastSaveTime += GetTimeSpan(1);
+        LastSessionTime = GetTimeSpan(1);
+        Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
         Profile.SaveProfile(LocalDataManager.LoadPlayerPrefsString("ProfileID"), Profile);
     }
 
@@ -161,11 +207,22 @@ public class LocalDataManager
 public class Profile
 {
     public string ProfileId;
+    public string PlayerName;
     public int PlayerMoney;
     public int PlayerStars;
+    public string LastSaveDate;
     public List<string> OpenedPlayersId = new List<string>();
-    public List<string> OpenedItemsId = new List<string>();
+    public List<string> Collection = new List<string>();
     public List<LevelData> LevelDatas = new List<LevelData>();
+    public List<LevelData> BonusLevelDatas = new List<LevelData>();
+    public List<ItemData> Items = new List<ItemData>();
+    public List<SpecialOffer> Offers = new List<SpecialOffer>();
+    public List<PlayerEvent> Events = new List<PlayerEvent>();
+    public float LastSaveTime;
+    public int LevelWinStrick;
+    public int BonusLevelWinStrick;
+    public string InstallDate;
+    public string AllTimeAfterInstall;
 
     public string GenerateProfileID()
     {
@@ -199,5 +256,34 @@ public class Profile
     {
         public int LevelNumber;
         public int StarsCount;
+    }
+
+    [System.Serializable]
+    public class ItemData
+    {
+        public string ItemId;
+        public int Count;
+    }
+
+    [System.Serializable]
+    public class SpecialOffer
+    {
+        public string OfferId;
+        public string StartDate;
+        public string EndDate;
+        public float StartTime;
+        public float Duration;
+        public bool isActive;
+    }
+
+    [System.Serializable]
+    public class PlayerEvent
+    {
+        public string OfferId;
+        public string StartDate;
+        public string EndDate;
+        public float StartTime;
+        public float Duration;
+        public bool isActive;
     }
 }
