@@ -20,7 +20,6 @@ public class EventManager : MonoBehaviour
     private void Start()
     {
         OnUiUpdateAction += CoinCollectAction;
-        OnUiUpdateAction += PlayerDeadAction;
     }
 
     public int AddCoinToProfile(int value)
@@ -97,7 +96,6 @@ public class EventManager : MonoBehaviour
     private void OnDestroy()
     {
         OnUiUpdateAction -= CoinCollectAction;
-        OnUiUpdateAction -= PlayerDeadAction;
     }
 }
 

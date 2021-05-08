@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     NavMeshAgent agent;
     [SerializeField] private float speed;
+    private float _casheSpeed;
     [SerializeField] private Transform target;
     [SerializeField] private Transform[] points = new Transform[3];
     [SerializeField] private int currIndx = 1;
@@ -25,11 +26,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float slidePower;
     [SerializeField] private float jumpPower;
     [SerializeField] private float offsetY;
-   [SerializeField] private GameObject contactcollision;
-   [SerializeField] private GameObject contactcollider;
+    [SerializeField] private GameObject contactcollision;
+    [SerializeField] private GameObject contactcollider;
     [SerializeField] private bool isPause = false;
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
+    [SerializeField] private float currentPlayerSpeed;
     private float acceleration;
+    public float Velocity;
+    private float calculatedVelocity;
+    private CollisionChecker collisionChecker;
+    private Vector3 startpos;
 
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
@@ -42,7 +48,20 @@ public class Player : MonoBehaviour
         MoveAnimator.SetInteger("Move", currIndx);
         offsetY = Vector3.Distance(raycastPoint.position, bodyBase.transform.position);
         acceleration = agent.acceleration;
+        collisionChecker = GameObject.FindObjectOfType<CollisionChecker>();
+        _casheSpeed = speed;
+    }
+    private void Start()
+    {
+        startpos = transform.position;
+        DataProvider.Instance.EventManager.OnPlayerDeadAction += PlayerDeath;
+    }
 
+    private void CalculateVelocity()
+    {
+        Vector3 newpos = transform.position;
+        calculatedVelocity = Vector3.Distance(newpos, startpos);
+        startpos = transform.position;
     }
 
     public void PlayerPause(bool value)
@@ -104,11 +123,11 @@ public class Player : MonoBehaviour
 
     private IEnumerator SpeedStop(float value, float time)
     {
-        agent.speed = value;
+        speed = value;
         agent.acceleration = 1000f;
         
         yield return new WaitForSeconds(time);
-        agent.speed = speed;
+        speed = _casheSpeed;
         agent.acceleration = 5f;
 
 
@@ -118,11 +137,14 @@ public class Player : MonoBehaviour
     {
         isCanMove = false;
         yield return new WaitForSeconds(moveDelay);
+        PlayerAnimator.SetFloat("Strafe", 0);
+        PlayerAnimator.SetInteger("Move", 0);
         isCanMove = true;
     }
 
     private void FixedUpdate()
     {
+
         RaycastHit hit;    
 
         if (!isJump)
@@ -135,14 +157,20 @@ public class Player : MonoBehaviour
                     if (!CheckignoredIsGrowndObjects(hit.transform.name))
                     {
                         isGrounded = true;
+                        PlayerAnimator.SetBool("Jump", false);
                         bodyBase.transform.position = new Vector3(bodyBase.transform.position.x, hit.point.y + offsetY, bodyBase.transform.position.z);
                     }
                 }
             }
             else
             {
+                PlayerAnimator.SetBool("Jump", true);
                 isGrounded = false;
             }
+        }
+        else
+        {
+            PlayerAnimator.SetBool("Jump", true);
         }
 
         Debug.DrawRay(body.transform.position, -bodyBase.transform.up * offsetY);
@@ -151,6 +179,11 @@ public class Player : MonoBehaviour
         CollideCheck();
         TriggerCheck();
 
+    }
+
+    public void PlayerDeath()
+    {
+        PlayerAnimator.SetBool("Death", true);
     }
 
     private bool IsCanMove(Vector3 dir)
@@ -179,6 +212,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            
             bodyBase.transform.position += Vector3.up * Time.deltaTime * 10f;
         }
     }
@@ -188,69 +222,81 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetAxis("Horizontal") > 0.8f)
+        agent.speed = speed;
+
+        if (!agent.isStopped)
         {
-
-            int nextIndx = currIndx;
-            nextIndx++;
-
-            if (points.Length - 1 >= nextIndx)
+            PlayerAnimator.SetFloat("Speed", agent.velocity.magnitude / agent.speed);
+            if (Input.GetAxis("Horizontal") > 0.8f)
             {
-                if (IsCanMove(Vector3.left))
+
+                int nextIndx = currIndx;
+                nextIndx++;
+
+                if (points.Length - 1 >= nextIndx)
                 {
-                    if (isCanMove)
+                    if (IsCanMove(Vector3.left))
                     {
-                        StartCoroutine(IsMove());
-                        currIndx = nextIndx;
-                        MoveAnimator.SetInteger("Move", currIndx);
-                    }
-                }
-            } 
-            
-        }
-
-        if (Input.GetAxis("Horizontal") < -0.8f)
-        {
-
-            int nextIndx = currIndx;
-            nextIndx--;
-
-            if (nextIndx >= 0)
-            {
-                if (IsCanMove(Vector3.right))
-                {
-                    if (isCanMove)
-                    {
-                        StartCoroutine(IsMove());
-                        currIndx = nextIndx;
-                        MoveAnimator.SetInteger("Move", currIndx);
+                        if (isCanMove)
+                        {
+                            StartCoroutine(IsMove());
+                            currIndx = nextIndx;
+                            MoveAnimator.SetInteger("Move", currIndx);
+                            PlayerAnimator.SetInteger("Move", 1);
+                        }
                     }
                 }
 
-            } 
-            
-        }
+            }
 
-        if (Input.GetAxis("Vertical") > 0.8f)
-        {
-            if (!isJump && isGrounded)
+            if (Input.GetAxis("Horizontal") < -0.8f)
             {
-                isGrounded = false;
-                isJump = true;
-                StartCoroutine(StopJump());
+
+                int nextIndx = currIndx;
+                nextIndx--;
+
+                if (nextIndx >= 0)
+                {
+                    if (IsCanMove(Vector3.right))
+                    {
+                        if (isCanMove)
+                        {
+                            StartCoroutine(IsMove());
+                            currIndx = nextIndx;
+                            MoveAnimator.SetInteger("Move", currIndx);
+                            PlayerAnimator.SetInteger("Move", -1);
+                        }
+                    }
+
+                }
+
+            }
+
+            if (Input.GetAxis("Vertical") > 0.8f)
+            {
+                if (!isJump && isGrounded)
+                {
+                    isGrounded = false;
+                    isJump = true;
+                    PlayerAnimator.SetBool("Jump", true);
+                    StartCoroutine(StopJump());
+                }
+            }
+
+            if (Input.GetAxis("Vertical") < -0.8f)
+            {
+                if (!isJump && isGrounded)
+                {
+                    isSlide = true;
+                    PlayerAnimator.SetBool("Slide", true);
+                    collisionChecker.CapsuleCollider.height = 0f;
+                    collisionChecker.CapsuleCollider.center = new Vector3(0, 0, 0);
+                    StartCoroutine(StopSlide());
+                }
             }
         }
-
-        if (Input.GetAxis("Vertical") < -0.8f)
-        {
-            if (!isJump && isGrounded)
-            {
-                isSlide = true;
-                PlayerAnimator.SetBool("Slide", true);
-                StartCoroutine(StopSlide());
-            }
-        }
-
+        else
+            currentPlayerSpeed = 0f;
         agent.SetDestination(target.position);
 
     }
@@ -259,12 +305,20 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(jumpPower);
         isJump = false;
+
     }
 
     private IEnumerator StopSlide()
     {
         yield return new WaitForSeconds(slidePower);
         PlayerAnimator.SetBool("Slide", false);
+        collisionChecker.CapsuleCollider.height = 1.5f;
+        collisionChecker.CapsuleCollider.center = new Vector3(0, 0.3f, 0);
         isSlide = false;
+    }
+
+    private void OnDestroy()
+    {
+        DataProvider.Instance.EventManager.OnPlayerDeadAction -= PlayerDeath;
     }
 }

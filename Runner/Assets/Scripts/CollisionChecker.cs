@@ -5,6 +5,7 @@ using UnityEngine;
 public class CollisionChecker : MonoBehaviour
 {
     private Player player;
+    public CapsuleCollider CapsuleCollider;
 
     void Start()
     {
