@@ -7,8 +7,10 @@ public class BlockDestroyer : MonoBehaviour
 {
     // Start is called before the first frame updat
 
+    [SerializeField] private GameObject destroyObj;
+
     internal void Activate()
     {
-        Destroy(gameObject);
+        Destroy(destroyObj);
     }
 }

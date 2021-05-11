@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
 
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
+    public bool IsSlide { get => isSlide; set => isSlide = value; }
 
     void Awake()
     {
@@ -110,8 +111,11 @@ public class Player : MonoBehaviour
             if (contactcollider.tag == "Obstacle")
             {
                 Obstacle obstacle = contactcollider.GetComponent<Obstacle>();
-                obstacle.Collide(this);
-                contactcollider = null;
+                if (obstacle)
+                {
+                    obstacle.Collide(this);
+                    contactcollider = null;
+                }
             }
         }
     }
@@ -287,7 +291,7 @@ public class Player : MonoBehaviour
             {
                 if (!isJump && isGrounded)
                 {
-                    isSlide = true;
+                    IsSlide = true;
                     PlayerAnimator.SetBool("Slide", true);
                     collisionChecker.CapsuleCollider.height = 0f;
                     collisionChecker.CapsuleCollider.center = new Vector3(0, 0, 0);
@@ -314,7 +318,7 @@ public class Player : MonoBehaviour
         PlayerAnimator.SetBool("Slide", false);
         collisionChecker.CapsuleCollider.height = 1.5f;
         collisionChecker.CapsuleCollider.center = new Vector3(0, 0.3f, 0);
-        isSlide = false;
+        IsSlide = false;
     }
 
     private void OnDestroy()

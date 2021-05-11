@@ -9,7 +9,9 @@ public class Roller : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private float rollSpeed;
-    private bool isRoll = false;
+    [SerializeField] private Transform rollSphere;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] private bool isRoll = false;
     public void StartRoll()
     {
         isRoll = true;
@@ -22,6 +24,8 @@ public class Roller : MonoBehaviour
     }
     private void Update()
     {
+        if (rollSphere && isRoll)
+            rollSphere.transform.Rotate(Vector3.left, Time.deltaTime * rotationSpeed);
         if(isRoll)
             agent.destination = navTarget.position;
     }

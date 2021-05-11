@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyUi : MonoBehaviour
 {
@@ -16,6 +17,14 @@ public class LobbyUi : MonoBehaviour
         placeholders.Add(collectionPlaceholder);
 
         SelectPlacholder(playerPlaceholder);
+
+        if (PlayerPrefs.HasKey("LoadedScene"))
+        {
+            if (PlayerPrefs.GetString("LoadedScene") != "NULL")
+            {
+                SceneManager.LoadScene(PlayerPrefs.GetString("LoadedScene"));
+            }
+        }
     }
 
     public void SelectPlacholder(Transform placholderToActive)

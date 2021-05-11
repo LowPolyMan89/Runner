@@ -11,16 +11,27 @@ public class LevelStats : MonoBehaviour
     [SerializeField] private int playerHitPoint = 3;
     [SerializeField] private int levelStars = 3;
     [SerializeField] private int finalLevelCoins = 0;
+    [SerializeField] private int coinCount = 0;
+    [SerializeField] private Vector3 starsCoinRange;
+    [SerializeField] private int finalStars = 0;
 
     public int CoinCollectCount { get => coinCollectCount; }
     public int PlayerHitPoint { get => playerHitPoint; }
     public string LevelId { get => levelId; }
     public int LevelStars { get => levelStars; }
     public int FinalLevelCoins { get => finalLevelCoins; set => finalLevelCoins = value; }
+    public Vector3 StarsCoinRange { get => starsCoinRange; }
+    public int FinalStars { get => finalStars; set => finalStars = value; }
 
     private void Awake()
     {
-        if(Instance == null)
+        if (!GameObject.FindObjectOfType<DataProvider>())
+        {
+            return;
+        }
+
+
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -31,6 +42,9 @@ public class LevelStats : MonoBehaviour
     private void Start()
     {
         DataProvider.Instance.EventManager.OnTakeDamageAction += AddHitPoint;
+        List<Coin> coins = new List<Coin>();
+        coins.AddRange(GameObject.FindObjectsOfType<Coin>());
+        coinCount = coins.Count;
     }
 
     public void AddCoin(int value)
@@ -53,6 +67,11 @@ public class LevelStats : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (!GameObject.FindObjectOfType<DataProvider>())
+        {
+            return;
+        }
+
         DataProvider.Instance.EventManager.OnTakeDamageAction -= AddHitPoint;
     }
 }

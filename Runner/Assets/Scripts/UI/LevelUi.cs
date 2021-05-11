@@ -10,7 +10,9 @@ public class LevelUi : MonoBehaviour
     [SerializeField] private LevelController levelController;
     [SerializeField] private Image hitPointImage;
     [SerializeField] private LevelStats levelStats;
-    [SerializeField] private Image progressBar;
+    [SerializeField] private Image progressBarStar1;
+    [SerializeField] private Image progressBarStar2;
+    [SerializeField] private Image progressBarStar3;
     [SerializeField] private Text coinsCountText;
     [SerializeField] private EventManager eventManager;
     [SerializeField] private GameObject failLevelPanel;
@@ -19,6 +21,7 @@ public class LevelUi : MonoBehaviour
 
     private void Awake()
     {
+
         levelController = GameObject.FindObjectOfType<LevelController>();
         eventManager = DataProvider.Instance.EventManager;
         eventManager.OnUiUpdateAction += UpdateUi;
@@ -64,14 +67,45 @@ public class LevelUi : MonoBehaviour
         if (levelStats)
         {
 
-            hitPointImage.fillAmount = (float)levelStats.PlayerHitPoint / 3;
+           // hitPointImage.fillAmount = (float)levelStats.PlayerHitPoint / 3;
 
         }
         coinsCountText.text = levelStats.CoinCollectCount.ToString();
+
+        if(levelStats.StarsCoinRange.x > levelStats.CoinCollectCount)
+        {
+            progressBarStar1.fillAmount = levelStats.CoinCollectCount / levelStats.StarsCoinRange.x;
+        }
+        else if(levelStats.StarsCoinRange.x <= levelStats.CoinCollectCount)
+        {
+            progressBarStar1.fillAmount = 1;
+            levelStats.FinalStars = 1;
+        }
+
+        if (levelStats.StarsCoinRange.y > levelStats.CoinCollectCount && levelStats.StarsCoinRange.x <= levelStats.CoinCollectCount)
+        {
+            progressBarStar2.fillAmount = levelStats.CoinCollectCount / levelStats.StarsCoinRange.y;
+        }
+        else if(levelStats.StarsCoinRange.y <= levelStats.CoinCollectCount)
+        {
+            progressBarStar2.fillAmount = 1;
+            levelStats.FinalStars = 2;
+        }
+
+        if (levelStats.StarsCoinRange.z > levelStats.CoinCollectCount && levelStats.StarsCoinRange.x <= levelStats.CoinCollectCount && levelStats.StarsCoinRange.y <= levelStats.CoinCollectCount)
+        {
+            progressBarStar3.fillAmount = levelStats.CoinCollectCount / levelStats.StarsCoinRange.z;
+        }
+        else if (levelStats.StarsCoinRange.z <= levelStats.CoinCollectCount)
+        {
+            progressBarStar3.fillAmount = 1;
+            levelStats.FinalStars = 3;
+        }
     }
 
     private void OnDestroy()
     {
+
         eventManager.OnUiUpdateAction -= UpdateUi;
         eventManager.OnLevelFailAction -= LevelFail;
         eventManager.OnLevelWinAction -= LevelWin;

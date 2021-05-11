@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fff2812d207eb2f41bff851166273d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyObj: {fileID: 8996310795812103920}
 --- !u!54 &4144640203355094857
 Rigidbody:
   m_ObjectHideFlags: 0

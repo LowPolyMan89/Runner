@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
 {
@@ -16,6 +17,17 @@ public class LevelController : MonoBehaviour
 
     private void Awake()
     {
+        if(!GameObject.FindObjectOfType<DataProvider>())
+        {
+            PlayerPrefs.SetString("LoadedScene", SceneManager.GetActiveScene().name);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("Init");
+        }
+        else
+        {
+            PlayerPrefs.SetString("LoadedScene", "NULL");
+            PlayerPrefs.Save();
+        }
         levelStats = GameObject.FindObjectOfType<LevelStats>();
     }
 
@@ -82,6 +94,7 @@ public class LevelController : MonoBehaviour
 
     private void OnDestroy()
     {
+
         DataProvider.Instance.EventManager.OnLevelFailAction -= FailLevel;
         DataProvider.Instance.EventManager.OnLevelWinAction -= WinLevel;
     }
