@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0199c11aa6f514784c5c69cd8378d8, type: 3}
+  m_Name: PlayFabEditorPrefsSO
+  m_EditorClassIdentifier: 
+  DevAccountEmail: pixelpolygons.rus@gmail.com
+  DevAccountToken: isqecsaoq6jgrqsn8exp1crsb9raah4stfi5nrrwywe7boz5zhp7u59cs15ip6h9smw5eqf4t7fn1xbef1uxmd8crs69ndnjzcog3y5izzgjejixx345nnk89771am8hqgfezeg6qf3j3j6toaq1fujonic877wigpc5zjrwimxotfnm7xeq66oh3ph1u7cd9mxac9rt
+  SelectedStudio: PixelPolygons
+  SdkPath: Assets/PlayFabSDK
+  EdExPath: 
+  LocalCloudScriptPath: 
+  PanelIsShown: 0
+  curMainMenuIdx: 2
+  curSubMenuIdx: 1
