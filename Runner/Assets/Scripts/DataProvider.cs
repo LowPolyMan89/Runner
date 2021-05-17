@@ -5,6 +5,9 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using PlayFab;
+using PlayFab.ClientModels;
+using PlayFab.PfEditor.EditorModels;
 
 public class DataProvider : MonoBehaviour
 {
@@ -109,12 +112,62 @@ public class DataProvider : MonoBehaviour
         else
         {
             ProfileID = LocalDataManager.LoadPlayerPrefsString("ProfileID");
-            LoadProfile();
+            LoadProfileFromLocal();
         }
-
+        
         SceneManager.LoadScene("Lobby");
     }
 
+    [ContextMenu("LoadDataFromServer")]
+    public void LoadDataFromServer()
+    {
+        if (PlayFabClientAPI.IsClientLoggedIn())
+        {
+            PlayFabClientAPI.GetUserData(new GetUserDataRequest { }, OnDataGet, OnDataError);
+        }
+        else
+        {
+            print("Play Fab not loggined, data doesnt send!");
+        }
+    }
+
+    private void OnDataGet(GetUserDataResult result)
+    {
+        if (result.Data != null && result.Data.ContainsKey("Profile"))
+        {
+            LoadProfileFromServer(result.Data["Profile"].Value);
+        }
+    }
+
+    [ContextMenu("SaveDataToServer")]
+    public void SaveDataToServer()
+    {
+        StartCoroutine(IsPlayFabLoggin());
+    }
+
+    private void OnDataSend(UpdateUserDataResult result)
+    {
+        print("Send profile to server");
+    }
+
+    private void OnDataError(PlayFab.PlayFabError error)
+    {
+        print(error.ErrorMessage);
+    }
+
+    private IEnumerator IsPlayFabLoggin()
+    {
+        yield return new WaitForSeconds(2f);
+        if (PlayFabClientAPI.IsClientLoggedIn())
+        {
+            var request = new UpdateUserDataRequest { Data = new Dictionary<string, string> { { "Profile", Profile.SaveProfile(ProfileID, Profile) } } };
+            PlayFabClientAPI.UpdateUserData(request, OnDataSend, OnDataError);
+        }
+        else
+        {
+            print("Play Fab not loggined, data doesnt send!");
+        }
+    }
 
     public SaveLoadEnum SaveLoad(SaveLoadEnum saveLoadEnum)
     {
@@ -130,7 +183,7 @@ public class DataProvider : MonoBehaviour
         }
         else
         {
-            LoadProfile();
+            LoadProfileFromLocal();
         }
 
         return _saveLoadEnum;
@@ -150,10 +203,16 @@ public class DataProvider : MonoBehaviour
         return value;
     }
 
-    [ContextMenu("load")]
-    public void LoadProfile()
+    [ContextMenu("LoadProfileFromLocal")]
+    public void LoadProfileFromLocal()
     {
         Profile profile = JsonUtility.FromJson<Profile>(File.ReadAllText(Application.persistentDataPath + "/" + LocalDataManager.LoadPlayerPrefsString("ProfileID")));
+        Profile = profile;
+    }
+
+    public void LoadProfileFromServer(string data)
+    {
+        Profile profile = JsonUtility.FromJson<Profile>(data);
         Profile = profile;
     }
 
@@ -297,11 +356,13 @@ public class Profile
         return str;
     }
 
-    public void SaveProfile(string profileID, object obj)
+    public string SaveProfile(string profileID, object obj)
     {
         string json = JsonUtility.ToJson(obj);
 
         SaveProfileToDisk(profileID, json);
+
+        return json;
     }
     public string LoadProfile()
     {

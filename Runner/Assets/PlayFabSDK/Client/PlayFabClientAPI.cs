@@ -77,6 +77,11 @@ namespace PlayFab
             PlayFabHttp.MakeApiCall("/Client/AddGenericID", request, AuthType.LoginSession, resultCallback, errorCallback, customData, extraHeaders, context, callSettings);
         }
 
+        public static void GetUserData(object onDataGet, Action<PlayFabError> onDataError)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Adds or updates a contact email to the player's profile.
         /// </summary>
