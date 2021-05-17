@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 1037829592}
   - component: {fileID: 1037829591}
   - component: {fileID: 1037829593}
+  - component: {fileID: 1037829594}
   m_Layer: 0
   m_Name: DataProvider
   m_TagString: Untagged
@@ -151,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f20bc7834bb422349b031684c7b94790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Timeline: {fileID: 1037829594}
   SelectedPlayerId: 
   Profile:
     ProfileId: 
@@ -205,3 +207,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146dfa7b4065d474bbdb175ec491213d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1037829594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037829590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8828d311a3ce80743ac723bbebd7f93d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timelineEvents: []
+  timelineEventPrefab: {fileID: 5898119381409059407, guid: d47a1879ca30add4c877d0ac23c3b723,
+    type: 3}
+  TimelineEventsConfig: {fileID: 11400000, guid: 79cd61e13a1517641a0a6afa28208138,
+    type: 2}

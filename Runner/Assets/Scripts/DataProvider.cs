@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class DataProvider : MonoBehaviour
 {
     public static DataProvider Instance;
+    public Timeline Timeline;
     public LocalDataManager LocalDataManager;
     public string SelectedPlayerId;
     public Profile Profile;
@@ -88,7 +89,14 @@ public class DataProvider : MonoBehaviour
             Profile.InstallDate = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
             levelData.LevelNumber = 1;
             levelData.StarsCount = 0;
-            Profile.PlayerMoney = 100;
+            Profile.AddResource("Money", 100);
+            Profile.AddResource("Crystals", 100);
+            Profile.AddResource("Wood", 0);
+            Profile.AddResource("Stone", 0);
+            Profile.AddResource("Ore", 0);
+            Profile.AddResource("Planks", 0);
+            Profile.AddResource("Bricks", 0);
+            Profile.AddResource("Iron", 0);
             Profile.LevelDatas.Add(levelData);
             Profile.OpenedPlayersId.Add("1");
             Profile.Collection.Add("TestItem");
@@ -137,7 +145,7 @@ public class DataProvider : MonoBehaviour
     public int AddCoinToProfile(int value)
     {
         print("Add profile money: " + value);
-        Profile.PlayerMoney += value;
+        Profile.AddResource("Money", value);
         SaveLoad(SaveLoadEnum.Save);
         return value;
     }
@@ -208,9 +216,8 @@ public class Profile
 {
     public string ProfileId;
     public string PlayerName;
-    public int PlayerMoney;
-    public int PlayerStars;
     public string LastSaveDate;
+    public List<Resource> Resources = new List<Resource>();
     public List<string> OpenedPlayersId = new List<string>();
     public List<string> Collection = new List<string>();
     public List<LevelData> LevelDatas = new List<LevelData>();
@@ -223,6 +230,65 @@ public class Profile
     public int BonusLevelWinStrick;
     public string InstallDate;
     public string AllTimeAfterInstall;
+
+    public int GetResource(string id)
+    {
+        int val = 0;
+        foreach(var r in Resources)
+        {
+            if(r.ID.Contains(id))
+            {
+                val = r.Value;
+            }
+        }
+
+        return val;
+    }
+
+    public void AddResource(string id, int value)
+    {
+        bool isHave = false;
+
+        foreach (var r in Resources)
+        {
+            if (r.ID.Contains(id))
+            {
+                isHave = true;
+                r.Value += value;
+                return;
+            }
+        }
+
+        if(!isHave)
+        {
+            Resource resource = new Resource();
+            resource.ID = id;
+            resource.Value = value;
+            Resources.Add(resource);
+            return;
+        }
+    }
+
+    public bool SubstractResource(string id, int value)
+    {
+        bool isCan = false;
+
+        foreach (var r in Resources)
+        {
+            if (r.ID.Contains(id))
+            {
+                if((r.Value - value) >= 0)
+                {
+                    r.Value -= value;
+                    isCan = true;
+                }           
+            }
+        }
+
+        return isCan;
+    }
+
+
 
     public string GenerateProfileID()
     {
@@ -257,6 +323,13 @@ public class Profile
     {
         public int LevelNumber;
         public int StarsCount;
+    }
+
+    [System.Serializable]
+    public class Resource
+    {
+        public string ID;
+        public int Value;
     }
 
     [System.Serializable]
