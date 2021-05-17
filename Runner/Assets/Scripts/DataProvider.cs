@@ -87,11 +87,11 @@ public class DataProvider : MonoBehaviour
             ProfileID = LocalDataManager.LoadPlayerPrefsString("ProfileID");
             Profile.ProfileId = ProfileID;
             Profile.PlayerName = "TestPlayer";
-            Profile.LevelData levelData = new Profile.LevelData();
-            Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
-            Profile.InstallDate = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
-            levelData.LevelNumber = 1;
-            levelData.StarsCount = 0;
+           // Profile.LevelData levelData = new Profile.LevelData();
+            Profile.LastSaveDate = System.DateTime.Now.ToString();
+            Profile.InstallDate = DateTime.Now.ToString();
+            //levelData.LevelNumber = 1;
+            //levelData.StarsCount = 0;
             Profile.AddResource("Money", 100);
             Profile.AddResource("Crystals", 100);
             Profile.AddResource("Wood", 0);
@@ -100,7 +100,7 @@ public class DataProvider : MonoBehaviour
             Profile.AddResource("Planks", 0);
             Profile.AddResource("Bricks", 0);
             Profile.AddResource("Iron", 0);
-            Profile.LevelDatas.Add(levelData);
+           // Profile.LevelDatas.Add(levelData);
             Profile.OpenedPlayersId.Add("1");
             Profile.Collection.Add("TestItem");
 
@@ -175,7 +175,7 @@ public class DataProvider : MonoBehaviour
 
         if(_saveLoadEnum == SaveLoadEnum.Save)
         {
-            Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+            Profile.LastSaveDate = System.DateTime.Now.ToString();
             Profile.LastSaveTime += GetTimeSpan(1);
             LastSessionTime = GetTimeSpan(1);
             Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
@@ -207,6 +207,11 @@ public class DataProvider : MonoBehaviour
     public void LoadProfileFromLocal()
     {
         Profile profile = JsonUtility.FromJson<Profile>(File.ReadAllText(Application.persistentDataPath + "/" + LocalDataManager.LoadPlayerPrefsString("ProfileID")));
+        Timeline.DropTimeline();
+        foreach(var t in profile.timelineEvents)
+        {
+            Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate);
+        }
         Profile = profile;
     }
 
@@ -224,10 +229,21 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("save")]
     public void SaveProfile()
     {
-        Profile.LastSaveDate = System.DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+        Profile.LastSaveDate = System.DateTime.Now.ToString();
         Profile.LastSaveTime += GetTimeSpan(1);
         LastSessionTime = GetTimeSpan(1);
         Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
+        Profile.timelineEvents.Clear();
+        foreach(var t in Timeline.TimelineEvents)
+        {
+            Profile.TimelineEventJsonOblect timelineEventJsonOblect = new Profile.TimelineEventJsonOblect();
+            timelineEventJsonOblect.EventID = t.EventID;
+            timelineEventJsonOblect.EventEndDate = t.EventEndDate.ToString();
+            timelineEventJsonOblect.isActive = t.isActive;
+            timelineEventJsonOblect.Seconds = t.Seconds;
+
+            Profile.timelineEvents.Add(timelineEventJsonOblect);
+        }
         Profile.SaveProfile(LocalDataManager.LoadPlayerPrefsString("ProfileID"), Profile);
     }
 
@@ -246,6 +262,7 @@ public class DataProvider : MonoBehaviour
 
     private void OnDestroy()
     {
+        SaveProfile();
         EventManager.OnSaveLoadAction -= SaveLoad;
         EventManager.OnAddCoinAction -= AddCoinToProfile;
     }
@@ -279,11 +296,12 @@ public class Profile
     public List<Resource> Resources = new List<Resource>();
     public List<string> OpenedPlayersId = new List<string>();
     public List<string> Collection = new List<string>();
-    public List<LevelData> LevelDatas = new List<LevelData>();
-    public List<LevelData> BonusLevelDatas = new List<LevelData>();
+    public List<TimelineEventJsonOblect> timelineEvents = new List<TimelineEventJsonOblect>();
+   // public List<LevelData> LevelDatas = new List<LevelData>();
+   // public List<LevelData> BonusLevelDatas = new List<LevelData>();
     public List<ItemData> Items = new List<ItemData>();
-    public List<SpecialOffer> Offers = new List<SpecialOffer>();
-    public List<PlayerEvent> Events = new List<PlayerEvent>();
+   // public List<SpecialOffer> Offers = new List<SpecialOffer>();
+   // public List<PlayerEvent> Events = new List<PlayerEvent>();
     public float LastSaveTime;
     public int LevelWinStrick;
     public int BonusLevelWinStrick;
@@ -420,5 +438,14 @@ public class Profile
         public float StartTime;
         public float Duration;
         public bool isActive;
+    }
+
+    [System.Serializable]
+    public class TimelineEventJsonOblect
+    {
+        public string EventID;
+        public string EventEndDate;
+        public float Seconds;
+        public bool isActive = true;
     }
 }
