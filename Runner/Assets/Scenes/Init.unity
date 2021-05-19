@@ -163,17 +163,8 @@ MonoBehaviour:
     Resources: []
     OpenedPlayersId: []
     Collection: []
-    LevelDatas: []
-    BonusLevelDatas: []
+    timelineEvents: []
     Items: []
-    Offers:
-    - OfferId: 
-      StartDate: 
-      EndDate: 
-      StartTime: 0
-      Duration: 0
-      isActive: 0
-    Events: []
     LastSaveTime: 0
     LevelWinStrick: 0
     BonusLevelWinStrick: 0

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -31,12 +32,15 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isPause = false;
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
     [SerializeField] private float currentPlayerSpeed;
+    [SerializeField] private Transform cameraLookAtPoint;
     private float acceleration;
     public float Velocity;
     private float calculatedVelocity;
     private CollisionChecker collisionChecker;
     private Vector3 startpos;
-
+    private Vector3 startTargetLocalPosition;
+    private Vector3 startCamPosition;
+    private Vector3 newCameraPosition;
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
     public bool IsSlide { get => isSlide; set => isSlide = value; }
@@ -55,6 +59,9 @@ public class Player : MonoBehaviour
     private void Start()
     {
         startpos = transform.position;
+        startTargetLocalPosition = target.position;
+        startCamPosition = Camera.main.transform.localPosition;
+        newCameraPosition = startCamPosition;
         DataProvider.Instance.EventManager.OnPlayerDeadAction += PlayerDeath;
     }
 
@@ -78,6 +85,15 @@ public class Player : MonoBehaviour
         }
 
         agent.isStopped = value;
+    }
+
+
+    private void SetNewCameraPosition()
+    {
+        if(Vector3.Distance(newCameraPosition, Camera.main.transform.localPosition) > 0.2f)
+        {
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition , newCameraPosition, Time.deltaTime *3f);
+        }
     }
 
     private bool CheckignoredIsGrowndObjects(string id)
@@ -106,17 +122,47 @@ public class Player : MonoBehaviour
 
     private void TriggerCheck()
     {
-        if (contactcollider)
+
+        if (!contactcollider)
+            return;
+
+        switch (contactcollider.tag)
         {
-            if (contactcollider.tag == "Obstacle")
-            {
+            case "Obstacle":
                 Obstacle obstacle = contactcollider.GetComponent<Obstacle>();
                 if (obstacle)
                 {
                     obstacle.Collide(this);
                     contactcollider = null;
                 }
-            }
+                break;
+
+            case "Turn":
+                TurnTrigger trigger = contactcollider.GetComponent<TurnTrigger>();
+ 
+                if (trigger)
+                {
+                    target.position = trigger.TurnPoint.position;
+                    Destroy(trigger.gameObject);
+                }
+                break;
+
+            case "CameraMover":
+                CameraPositionTrigger triggerCam = contactcollider.GetComponent<CameraPositionTrigger>();
+
+                if (triggerCam)
+                {
+                    if (!triggerCam.IsReset)
+                    {
+                        newCameraPosition = Camera.main.transform.localPosition + triggerCam.CamOffset;         
+                    }
+                    else
+                    {
+                        newCameraPosition = startCamPosition;
+                    }
+                }
+                Destroy(triggerCam.gameObject);
+                break;
         }
     }
 
@@ -225,7 +271,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        SetNewCameraPosition();
+        Camera.main.transform.LookAt(cameraLookAtPoint.position);
         agent.speed = speed;
 
         if (!agent.isStopped)
