@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
-    NavMeshAgent agent;
     [SerializeField] private float speed;
     private float _casheSpeed;
     [SerializeField] private Transform target;
@@ -31,8 +30,9 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject contactcollider;
     [SerializeField] private bool isPause = false;
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
-    [SerializeField] private float currentPlayerSpeed;
     [SerializeField] private Transform cameraLookAtPoint;
+    [SerializeField] private int navPointIndx = 0;
+    [SerializeField] private PathChunk currentPathChunk;
     private float acceleration;
     public float Velocity;
     private float calculatedVelocity;
@@ -41,20 +41,20 @@ public class Player : MonoBehaviour
     private Vector3 startTargetLocalPosition;
     private Vector3 startCamPosition;
     private Vector3 newCameraPosition;
+    private Vector3 EulerAngles;
+    private LevelController levelController;
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
     public bool IsSlide { get => isSlide; set => isSlide = value; }
 
     void Awake()
     {
-
-        agent = GetComponent<NavMeshAgent>();
-        speed = agent.speed;
+        levelController = GameObject.FindObjectOfType<LevelController>();
         MoveAnimator.SetInteger("Move", currIndx);
         offsetY = Vector3.Distance(raycastPoint.position, bodyBase.transform.position);
-        acceleration = agent.acceleration;
         collisionChecker = GameObject.FindObjectOfType<CollisionChecker>();
         _casheSpeed = speed;
+        currentPathChunk = levelController.FirstChunk;
     }
     private void Start()
     {
@@ -76,15 +76,12 @@ public class Player : MonoBehaviour
     {
         if(value)
         {
-            acceleration = agent.acceleration;
-            agent.acceleration = 1000;
+            speed = 0;
         }
         else
         {
-            agent.acceleration = acceleration;
+            speed = _casheSpeed;
         }
-
-        agent.isStopped = value;
     }
 
 
@@ -174,12 +171,9 @@ public class Player : MonoBehaviour
     private IEnumerator SpeedStop(float value, float time)
     {
         speed = value;
-        agent.acceleration = 1000f;
         
         yield return new WaitForSeconds(time);
         speed = _casheSpeed;
-        agent.acceleration = 5f;
-
 
     }
 
@@ -273,11 +267,10 @@ public class Player : MonoBehaviour
     {
         SetNewCameraPosition();
         Camera.main.transform.LookAt(cameraLookAtPoint.position);
-        agent.speed = speed;
 
-        if (!agent.isStopped)
+        if (speed > 0)
         {
-            PlayerAnimator.SetFloat("Speed", agent.velocity.magnitude / agent.speed);
+            PlayerAnimator.SetFloat("Speed", speed);
             if (Input.GetAxis("Horizontal") > 0.8f)
             {
 
@@ -346,10 +339,67 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        else
-            currentPlayerSpeed = 0f;
-        agent.SetDestination(target.position);
 
+        if (currentPathChunk)
+        {
+            if (currentPathChunk.navPointsList.Count >= navPointIndx)
+            {
+                var waypoint = currentPathChunk.navPointsList[navPointIndx].position;
+                var pos = transform.position;
+
+                while (IsInRange(pos, waypoint, 0.1f))
+                {
+                    navPointIndx++;
+                    if (navPointIndx >= currentPathChunk.navPointsList.Count)
+                    {
+                        if (!currentPathChunk.isFinal)
+                        {
+                            currentPathChunk = GetNextPath();
+                            navPointIndx = 0;
+                        }
+
+                    }
+                    else
+                    {
+                        navPointIndx--;
+                    }
+
+                    if (currentPathChunk != null)
+                    {
+                        waypoint = currentPathChunk.navPointsList[navPointIndx].position;
+                    }
+                }
+
+                var moveDistance = Time.deltaTime * speed;
+                transform.position = Vector3.MoveTowards(transform.position, waypoint, moveDistance);
+
+                EulerAngles = Quaternion.LookRotation(waypoint - transform.position).eulerAngles;
+            }
+        }
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), 10 * Time.deltaTime);
+    }
+
+    private PathChunk GetNextPath()
+    {
+        if(currIndx == 0)
+        {
+            return currentPathChunk.LeftChunk;
+        }
+        else if (currIndx == 2)
+        {
+            return currentPathChunk.RightChunk;
+        }
+        else
+        {
+            return currentPathChunk.CenterChunk;
+        }
+
+
+    }
+
+    static bool IsInRange(Vector3 a, Vector3 b, float range)
+    {
+        return (b - a).sqrMagnitude <= range * range;
     }
 
     private IEnumerator StopJump()

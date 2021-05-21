@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.PfEditor.EditorModels;
+using System.Globalization;
 
 public class DataProvider : MonoBehaviour
 {
@@ -37,35 +38,47 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("TestTimeSpan")]
     public float GetTimeSpan(float time)
     {
-        b = DateTime.Now;
+        b = DateTime.UtcNow;
         s = b - a;
         return (float)s.TotalSeconds;
     }
     public string GetTimeSpan(string date)
     {
-        b = DateTime.Now;
+        b = DateTime.UtcNow;
         s = b - a;
         return s.ToString();
     }
 
     public DateTime GetTimeSpan(TimeSpan span)
     {
-        b = DateTime.Now;
+        b = DateTime.UtcNow;
         DateTime s = b + span;
         return s;
     }
 
     public string GetAllTime(string installDate)
     {
-        DateTime a = DateTime.Now; // текущая дата
-        DateTime b = DateTime.Parse(installDate); // дата начала всего
-        TimeSpan c = b - a; // прошедшее время сессии
+
+
+        DateTime a = DateTime.UtcNow; // текущая дата
+        DateTime b;
+
+        string inp = installDate;
+        string format = "yyyy-MM-dd HH:mm:ssZ";
+
+        if (!DateTime.TryParseExact(inp, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out b))
+        {
+            Console.WriteLine("Nope!");
+        }
+
+        TimeSpan c = b.ToUniversalTime() - a; // прошедшее время сессии
+        
         return c.ToString();
     }
 
     private void Start()
     {
-        a = DateTime.Now;
+        a = DateTime.UtcNow;
 
         EventManager.OnSaveLoadAction += SaveLoad;
         EventManager.OnAddCoinAction += AddCoinToProfile;
@@ -88,8 +101,8 @@ public class DataProvider : MonoBehaviour
             Profile.ProfileId = ProfileID;
             Profile.PlayerName = "TestPlayer";
            // Profile.LevelData levelData = new Profile.LevelData();
-            Profile.LastSaveDate = System.DateTime.Now.ToString();
-            Profile.InstallDate = DateTime.Now.ToString();
+            Profile.LastSaveDate = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
+            Profile.InstallDate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
             //levelData.LevelNumber = 1;
             //levelData.StarsCount = 0;
             Profile.AddResource("Money", 100);
@@ -175,7 +188,7 @@ public class DataProvider : MonoBehaviour
 
         if(_saveLoadEnum == SaveLoadEnum.Save)
         {
-            Profile.LastSaveDate = System.DateTime.Now.ToString();
+            Profile.LastSaveDate = System.DateTime.UtcNow.ToString();
             Profile.LastSaveTime += GetTimeSpan(1);
             LastSessionTime = GetTimeSpan(1);
             Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
@@ -229,7 +242,7 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("save")]
     public void SaveProfile()
     {
-        Profile.LastSaveDate = System.DateTime.Now.ToString();
+        Profile.LastSaveDate = System.DateTime.UtcNow.ToString();
         Profile.LastSaveTime += GetTimeSpan(1);
         LastSessionTime = GetTimeSpan(1);
         Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
@@ -238,7 +251,7 @@ public class DataProvider : MonoBehaviour
         {
             Profile.TimelineEventJsonOblect timelineEventJsonOblect = new Profile.TimelineEventJsonOblect();
             timelineEventJsonOblect.EventID = t.EventID;
-            timelineEventJsonOblect.EventEndDate = t.EventEndDate.ToString();
+            timelineEventJsonOblect.EventEndDate = t.EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
             timelineEventJsonOblect.isActive = t.isActive;
             timelineEventJsonOblect.Seconds = t.Seconds;
 

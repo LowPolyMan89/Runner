@@ -13,7 +13,7 @@ public class TimelineEvent : MonoBehaviour
 
     private void Start()
     {
-        gameObject.name = EventID + " / " + EventEndDate.ToString("yyyy/MM/dd hh:mm:ss");
+        gameObject.name = EventID + " / " + EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ");
     }
 
     public virtual void CompliteEvent()

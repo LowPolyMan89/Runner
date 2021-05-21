@@ -9,11 +9,15 @@ public class LevelController : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private Transform playerSpawn;
     [SerializeField] private LevelStats levelStats;
+    [SerializeField] private Transform navPointsParent;
+    [SerializeField] private PathChunk chunk;
+
     private Player playerScript;
     private int startTimer = 3;
 
     public int StartTimer { get => startTimer; }
     public LevelStats LevelStats { get => levelStats; }
+    public PathChunk FirstChunk { get => chunk; }
 
     private void Awake()
     {
@@ -29,6 +33,7 @@ public class LevelController : MonoBehaviour
             PlayerPrefs.Save();
         }
         levelStats = GameObject.FindObjectOfType<LevelStats>();
+
     }
 
     private void Start()
@@ -98,4 +103,5 @@ public class LevelController : MonoBehaviour
         DataProvider.Instance.EventManager.OnLevelFailAction -= FailLevel;
         DataProvider.Instance.EventManager.OnLevelWinAction -= WinLevel;
     }
+
 }

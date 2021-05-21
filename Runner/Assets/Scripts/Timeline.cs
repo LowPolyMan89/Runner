@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class Timeline : MonoBehaviour
@@ -19,7 +20,7 @@ public class Timeline : MonoBehaviour
         TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
         ev.EventID = ID;
         ev.Seconds = (float)time;
-        ev.EventEndDate = DateTime.Now.AddSeconds(time);
+        ev.EventEndDate = DateTime.UtcNow.AddSeconds(time);
         TimelineEvents.Add(ev);
     }
 
@@ -30,7 +31,18 @@ public class Timeline : MonoBehaviour
         TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
         ev.EventID = ID;
         ev.Seconds = (float)seconds;
-        ev.EventEndDate = DateTime.Parse(time);
+
+        string inp = time;
+        string format = "yyyy-MM-dd HH:mm:ssZ";
+        DateTime dt;
+
+        if (!DateTime.TryParseExact(inp, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+        {
+            Console.WriteLine("Nope!");
+        }
+ 
+        ev.EventEndDate = dt.ToUniversalTime();
+
         TimelineEvents.Add(ev);
     }
 
@@ -62,7 +74,7 @@ public class Timeline : MonoBehaviour
     [ContextMenu("AddTestTimeline")]
     public void AddTestTimeline()
     {
-        AddNewTimelineEvent(DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss"), 20);
+        AddNewTimelineEvent(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ"), 20);
     }
 
     private void Start()
@@ -112,8 +124,9 @@ public class Timeline : MonoBehaviour
 
         if(timelineEvent.isActive)
         {
-
-            if(timelineEvent.EventEndDate <= DateTime.Now)
+            print(timelineEvent.EventEndDate);
+            print(DateTime.UtcNow);
+            if (timelineEvent.EventEndDate <= DateTime.UtcNow)
             {
                 timelineEvent.CompliteEvent();
                 removeevent = timelineEvent;
