@@ -75,8 +75,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fee2aa2cad989d40a78647bdc2d2b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelId: 
   coinCollectCount: 0
-  playerHitPoint: 3
+  playerHitPoint: 1
+  levelStars: 3
+  finalLevelCoins: 0
+  coinCount: 0
+  starsCoinRange: {x: 0, y: 0, z: 0}
+  finalStars: 0
 --- !u!114 &7936201996063213139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,3 +98,6 @@ MonoBehaviour:
   playerPrefabID: Player
   player: {fileID: 0}
   playerSpawn: {fileID: 7936201994947520178}
+  levelStats: {fileID: 0}
+  navPointsParent: {fileID: 0}
+  chunk: {fileID: 0}

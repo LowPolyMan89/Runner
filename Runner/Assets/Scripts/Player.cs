@@ -359,10 +359,6 @@ public class Player : MonoBehaviour
                         }
 
                     }
-                    else
-                    {
-                        navPointIndx--;
-                    }
 
                     if (currentPathChunk != null)
                     {
