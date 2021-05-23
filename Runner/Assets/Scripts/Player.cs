@@ -372,7 +372,7 @@ public class Player : MonoBehaviour
                 EulerAngles = Quaternion.LookRotation(waypoint - transform.position).eulerAngles;
             }
         }
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), 10 * Time.deltaTime);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), 2 * Time.deltaTime);
     }
 
     private PathChunk GetNextPath()
