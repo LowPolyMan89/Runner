@@ -396,8 +396,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2350772753881089707}
-  - component: {fileID: 2350772753881089711}
   - component: {fileID: 2350772753881089710}
+  - component: {fileID: 9118951636531599929}
   m_Layer: 8
   m_Name: Player_1
   m_TagString: Untagged
@@ -424,28 +424,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180.204, z: 0}
---- !u!195 &2350772753881089711
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2350772753881089709}
-  m_Enabled: 0
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 10
-  m_Acceleration: 5
-  avoidancePriority: 50
-  m_AngularSpeed: 500
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 1
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
 --- !u!114 &2350772753881089710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,12 +438,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 15
   target: {fileID: 2350772753270147950}
-  points:
-  - {fileID: 2350772753508063754}
-  - {fileID: 2350772754048189987}
-  - {fileID: 2350772753737085016}
-  currIndx: 1
-  moveDelay: 0.3
   body: {fileID: 2350772753575756889}
   MoveAnimator: {fileID: 1808149158168913729}
   JumpAnimator: {fileID: 8630069567651397463}
@@ -475,10 +447,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 55
   raycastPoint: {fileID: 2350772752904740072}
-  isJump: 0
-  isSlide: 0
-  isGrounded: 0
-  isCanMove: 1
   slidePower: 1
   jumpPower: 0.4
   offsetY: 0
@@ -488,9 +456,33 @@ MonoBehaviour:
   ignoredIsGrowndObjects:
   - DeadZone
   cameraLookAtPoint: {fileID: 7187449379454116076}
+  Velocity: 0
+--- !u!114 &9118951636531599929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2350772753881089709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a4ebe75401108442bb019b66a72c0ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   navPointIndx: 0
   currentPathChunk: {fileID: 0}
-  Velocity: 0
+  isJump: 0
+  isSlide: 0
+  isGrounded: 0
+  isCanMove: 1
+  MoveAnimator: {fileID: 1808149158168913729}
+  JumpAnimator: {fileID: 8630069567651397463}
+  PlayerAnimator: {fileID: 5333160941123794013}
+  player: {fileID: 2350772753881089710}
+  points:
+  - {fileID: 2350772753508063754}
+  - {fileID: 2350772754048189987}
+  - {fileID: 2350772753737085016}
 --- !u!1 &2350772754048189986
 GameObject:
   m_ObjectHideFlags: 0

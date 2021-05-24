@@ -8,7 +8,7 @@ public class BrokenBlock : Collectable
 
     public override GameObject Collide(Player player)
     {
-        if (!player.IsSlide)
+        if (!player.MoveController.IsSlide)
         {
             DataProvider.Instance.EventManager.TakeDamageAction(DamageValue);
         }
