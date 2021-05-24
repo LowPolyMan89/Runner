@@ -43,12 +43,14 @@ public class Player : MonoBehaviour
     private Vector3 newCameraPosition;
     private Vector3 EulerAngles;
     private LevelController levelController;
+    private PlayerMoveController moveController;
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
     public bool IsSlide { get => isSlide; set => isSlide = value; }
 
     void Awake()
     {
+        moveController = GameObject.FindObjectOfType<PlayerMoveController>();
         levelController = GameObject.FindObjectOfType<LevelController>();
         MoveAnimator.SetInteger("Move", currIndx);
         offsetY = Vector3.Distance(raycastPoint.position, bodyBase.transform.position);
@@ -63,13 +65,6 @@ public class Player : MonoBehaviour
         startCamPosition = Camera.main.transform.localPosition;
         newCameraPosition = startCamPosition;
         DataProvider.Instance.EventManager.OnPlayerDeadAction += PlayerDeath;
-    }
-
-    private void CalculateVelocity()
-    {
-        Vector3 newpos = transform.position;
-        calculatedVelocity = Vector3.Distance(newpos, startpos);
-        startpos = transform.position;
     }
 
     public void PlayerPause(bool value)
