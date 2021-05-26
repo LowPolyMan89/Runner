@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     public LayerMask LayerMaskGround { get => layerMaskGround; set => layerMaskGround = value; }
     public PlayerMoveController MoveController { get => moveController; set => moveController = value; }
     public Transform CameraLookAtPoint { get => cameraLookAtPoint; set => cameraLookAtPoint = value; }
+    public float Speed { get => speed; set => speed = value; }
 
     void Awake()
     {
@@ -174,37 +175,6 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
 
-        RaycastHit hit;    
-
-        if (!moveController.IsJump)
-        {
-            if (Physics.Raycast(body.transform.position, -Vector3.up, out hit, offsetY + 0.1f, layerMaskGround))
-            {
-                
-                if (!hit.transform.gameObject.GetComponent<Coin>())
-                {
-                    if (!CheckignoredIsGrowndObjects(hit.transform.name))
-                    {
-                        moveController.IsGrounded = true;
-                        PlayerAnimator.SetBool("Jump", false);
-                        bodyBase.transform.position = new Vector3(bodyBase.transform.position.x, hit.point.y + offsetY, bodyBase.transform.position.z);
-                    }
-                }
-            }
-            else
-            {
-                PlayerAnimator.SetBool("Jump", true);
-                moveController.IsGrounded = false;
-            }
-        }
-        else
-        {
-            PlayerAnimator.SetBool("Jump", true);
-        }
-
-        Debug.DrawRay(body.transform.position, -bodyBase.transform.up * offsetY);
-
-        Gravity();
         CollideCheck();
         TriggerCheck();
 
@@ -233,9 +203,40 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveController.PlayerSpeed = speed;
         moveController.XAxis = Input.GetAxis("Horizontal");
-        moveController.YAxis = Input.GetAxis("Vertical");     
+        moveController.YAxis = Input.GetAxis("Vertical");
+
+        RaycastHit hit;
+
+        if (!moveController.IsJump)
+        {
+            if (Physics.Raycast(body.transform.position, -Vector3.up, out hit, offsetY + 0.1f, layerMaskGround))
+            {
+
+                if (!hit.transform.gameObject.GetComponent<Coin>())
+                {
+                    if (!CheckignoredIsGrowndObjects(hit.transform.name))
+                    {
+                        moveController.IsGrounded = true;
+                        PlayerAnimator.SetBool("Jump", false);
+                        bodyBase.transform.position = new Vector3(bodyBase.transform.position.x, hit.point.y + offsetY, bodyBase.transform.position.z);
+                    }
+                }
+            }
+            else
+            {
+                PlayerAnimator.SetBool("Jump", true);
+                moveController.IsGrounded = false;
+            }
+        }
+        else
+        {
+            PlayerAnimator.SetBool("Jump", true);
+        }
+
+        Debug.DrawRay(body.transform.position, -bodyBase.transform.up * offsetY);
+
+        Gravity();
     }
 
 

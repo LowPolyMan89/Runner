@@ -469,6 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4ebe75401108442bb019b66a72c0ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chunkAngleTest: 5
   navPointIndx: 0
   currentPathChunk: {fileID: 0}
   isJump: 0

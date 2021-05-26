@@ -11,6 +11,7 @@ public class PlayerMoveController : MonoBehaviour
     private int positionIndx = 1;
     private Transform body;
     private Vector3 EulerAngles;
+    [SerializeField] private float chunkAngleTest;
     [SerializeField] private int navPointIndx = 0;
     [SerializeField] private PathChunk currentPathChunk;
     [SerializeField] private bool isJump = false;
@@ -44,8 +45,8 @@ public class PlayerMoveController : MonoBehaviour
 
     private void Update()
     {
-        player.SetNewCameraPosition();
-        Camera.main.transform.LookAt(player.CameraLookAtPoint.position);
+        playerSpeed = player.Speed;
+
         if (playerSpeed > 0)
         {
             PlayerAnimator.SetFloat("Speed", playerSpeed);
@@ -147,10 +148,17 @@ public class PlayerMoveController : MonoBehaviour
                 var moveDistance = Time.deltaTime * playerSpeed;
                 transform.position = Vector3.MoveTowards(transform.position, waypoint, moveDistance);
 
-                EulerAngles = Quaternion.LookRotation(waypoint - transform.position).eulerAngles;
+                if (!IsInRange(transform.position, waypoint, 0.15f))
+                {
+                    EulerAngles = Quaternion.LookRotation(waypoint - transform.position).eulerAngles;
+                }
+
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), chunkAngleTest * Time.deltaTime);
             }
         }
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), 2 * Time.deltaTime);
+
+        player.SetNewCameraPosition();
+        Camera.main.transform.LookAt(player.CameraLookAtPoint.position);
     }
 
     private IEnumerator IsMove()
