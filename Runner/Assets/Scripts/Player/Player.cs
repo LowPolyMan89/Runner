@@ -9,9 +9,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed;
     private float _casheSpeed;
     [SerializeField] private Transform target;
-    [SerializeField] private Transform[] points = new Transform[3];
-    [SerializeField] private int currIndx = 1;
-    [SerializeField] private float moveDelay = 0.5f;
     [SerializeField] private Transform body;
     [SerializeField] private Animator MoveAnimator;
     [SerializeField] private Animator JumpAnimator;
@@ -19,10 +16,6 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject bodyBase;
     [SerializeField] private LayerMask layerMaskGround;
     [SerializeField] private Transform raycastPoint;
-    [SerializeField] private bool isJump = false;
-    [SerializeField] private bool isSlide = false;
-    [SerializeField] private bool isGrounded = false;
-    [SerializeField] private bool isCanMove = true;
     [SerializeField] private float slidePower;
     [SerializeField] private float jumpPower;
     [SerializeField] private float offsetY;
@@ -31,8 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isPause = false;
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
     [SerializeField] private Transform cameraLookAtPoint;
-    [SerializeField] private int navPointIndx = 0;
-    [SerializeField] private PathChunk currentPathChunk;
+
     private float acceleration;
     public float Velocity;
     private float calculatedVelocity;
@@ -41,22 +33,29 @@ public class Player : MonoBehaviour
     private Vector3 startTargetLocalPosition;
     private Vector3 startCamPosition;
     private Vector3 newCameraPosition;
-    private Vector3 EulerAngles;
     private LevelController levelController;
     private PlayerMoveController moveController;
     public GameObject Contactcollision { get => contactcollision; set => contactcollision = value; }
     public GameObject Contactcollider { get => contactcollider; set => contactcollider = value; }
-    public bool IsSlide { get => isSlide; set => isSlide = value; }
+    public Transform Body { get => body; set => body = value; }
+    public float JumpPower { get => jumpPower; set => jumpPower = value; }
+    public float SlidePower { get => slidePower; set => slidePower = value; }
+    public CollisionChecker CollisionChecker { get => collisionChecker; set => collisionChecker = value; }
+    public LayerMask LayerMaskGround { get => layerMaskGround; set => layerMaskGround = value; }
+    public PlayerMoveController MoveController { get => moveController; set => moveController = value; }
+    public Transform CameraLookAtPoint { get => cameraLookAtPoint; set => cameraLookAtPoint = value; }
+    public float Speed { get => speed; set => speed = value; }
 
     void Awake()
     {
         moveController = GameObject.FindObjectOfType<PlayerMoveController>();
+        moveController.Player = this;
+        moveController.Body = body;
         levelController = GameObject.FindObjectOfType<LevelController>();
-        MoveAnimator.SetInteger("Move", currIndx);
         offsetY = Vector3.Distance(raycastPoint.position, bodyBase.transform.position);
         collisionChecker = GameObject.FindObjectOfType<CollisionChecker>();
         _casheSpeed = speed;
-        currentPathChunk = levelController.FirstChunk;
+        moveController.CurrentPathChunk = levelController.FirstChunk;
     }
     private void Start()
     {
@@ -80,11 +79,11 @@ public class Player : MonoBehaviour
     }
 
 
-    private void SetNewCameraPosition()
+    public void SetNewCameraPosition()
     {
         if(Vector3.Distance(newCameraPosition, Camera.main.transform.localPosition) > 0.2f)
         {
-            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition , newCameraPosition, Time.deltaTime *3f);
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition , newCameraPosition, Time.deltaTime * 2f);
         }
     }
 
@@ -172,49 +171,10 @@ public class Player : MonoBehaviour
 
     }
 
-    private IEnumerator IsMove()
-    {
-        isCanMove = false;
-        yield return new WaitForSeconds(moveDelay);
-        PlayerAnimator.SetFloat("Strafe", 0);
-        PlayerAnimator.SetInteger("Move", 0);
-        isCanMove = true;
-    }
 
     private void FixedUpdate()
     {
 
-        RaycastHit hit;    
-
-        if (!isJump)
-        {
-            if (Physics.Raycast(body.transform.position, -Vector3.up, out hit, offsetY + 0.1f, layerMaskGround))
-            {
-                
-                if (!hit.transform.gameObject.GetComponent<Coin>())
-                {
-                    if (!CheckignoredIsGrowndObjects(hit.transform.name))
-                    {
-                        isGrounded = true;
-                        PlayerAnimator.SetBool("Jump", false);
-                        bodyBase.transform.position = new Vector3(bodyBase.transform.position.x, hit.point.y + offsetY, bodyBase.transform.position.z);
-                    }
-                }
-            }
-            else
-            {
-                PlayerAnimator.SetBool("Jump", true);
-                isGrounded = false;
-            }
-        }
-        else
-        {
-            PlayerAnimator.SetBool("Jump", true);
-        }
-
-        Debug.DrawRay(body.transform.position, -bodyBase.transform.up * offsetY);
-
-        Gravity();
         CollideCheck();
         TriggerCheck();
 
@@ -225,28 +185,11 @@ public class Player : MonoBehaviour
         PlayerAnimator.SetBool("Death", true);
     }
 
-    private bool IsCanMove(Vector3 dir)
-    {
-        bool check = true;
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(body.transform.position, dir, out hit, 2f, layerMaskGround))
-        {
-            if(hit.transform.gameObject.GetComponent<Obstacle>() && !hit.transform.gameObject.GetComponent<Coin>())
-            {
-                check = false;
-            }
-        }
-
-        return check;
-    }
-
     private void Gravity()
     {
-        if(!isJump)
+        if(!moveController.IsJump)
         {
-            if(!isGrounded)
+            if(!moveController.IsGrounded)
                 bodyBase.transform.position += -Vector3.up * Time.deltaTime * 10f;
         }
         else
@@ -260,154 +203,42 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetNewCameraPosition();
-        Camera.main.transform.LookAt(cameraLookAtPoint.position);
+        moveController.XAxis = Input.GetAxis("Horizontal");
+        moveController.YAxis = Input.GetAxis("Vertical");
 
-        if (speed > 0)
+        RaycastHit hit;
+
+        if (!moveController.IsJump)
         {
-            PlayerAnimator.SetFloat("Speed", speed);
-            if (Input.GetAxis("Horizontal") > 0.8f)
+            if (Physics.Raycast(body.transform.position, -Vector3.up, out hit, offsetY + 0.1f, layerMaskGround))
             {
 
-                int nextIndx = currIndx;
-                nextIndx++;
-
-                if (points.Length - 1 >= nextIndx)
+                if (!hit.transform.gameObject.GetComponent<Coin>())
                 {
-                    if (IsCanMove(Vector3.left))
+                    if (!CheckignoredIsGrowndObjects(hit.transform.name))
                     {
-                        if (isCanMove)
-                        {
-                            StartCoroutine(IsMove());
-                            currIndx = nextIndx;
-                            MoveAnimator.SetInteger("Move", currIndx);
-                            PlayerAnimator.SetInteger("Move", 1);
-                        }
+                        moveController.IsGrounded = true;
+                        PlayerAnimator.SetBool("Jump", false);
+                        bodyBase.transform.position = new Vector3(bodyBase.transform.position.x, hit.point.y + offsetY, bodyBase.transform.position.z);
                     }
                 }
-
             }
-
-            if (Input.GetAxis("Horizontal") < -0.8f)
+            else
             {
-
-                int nextIndx = currIndx;
-                nextIndx--;
-
-                if (nextIndx >= 0)
-                {
-                    if (IsCanMove(Vector3.right))
-                    {
-                        if (isCanMove)
-                        {
-                            StartCoroutine(IsMove());
-                            currIndx = nextIndx;
-                            MoveAnimator.SetInteger("Move", currIndx);
-                            PlayerAnimator.SetInteger("Move", -1);
-                        }
-                    }
-
-                }
-
+                PlayerAnimator.SetBool("Jump", true);
+                moveController.IsGrounded = false;
             }
-
-            if (Input.GetAxis("Vertical") > 0.8f)
-            {
-                if (!isJump && isGrounded)
-                {
-                    isGrounded = false;
-                    isJump = true;
-                    PlayerAnimator.SetBool("Jump", true);
-                    StartCoroutine(StopJump());
-                }
-            }
-
-            if (Input.GetAxis("Vertical") < -0.8f)
-            {
-                if (!isJump && isGrounded)
-                {
-                    IsSlide = true;
-                    PlayerAnimator.SetBool("Slide", true);
-                    collisionChecker.CapsuleCollider.height = 0f;
-                    collisionChecker.CapsuleCollider.center = new Vector3(0, 0, 0);
-                    StartCoroutine(StopSlide());
-                }
-            }
-        }
-
-        if (currentPathChunk)
-        {
-            if (currentPathChunk.navPointsList.Count >= navPointIndx)
-            {
-                var waypoint = currentPathChunk.navPointsList[navPointIndx].position;
-                var pos = transform.position;
-
-                while (IsInRange(pos, waypoint, 0.1f))
-                {
-                    navPointIndx++;
-                    if (navPointIndx >= currentPathChunk.navPointsList.Count)
-                    {
-                        if (!currentPathChunk.isFinal)
-                        {
-                            currentPathChunk = GetNextPath();
-                            navPointIndx = 0;
-                        }
-
-                    }
-
-                    if (currentPathChunk != null)
-                    {
-                        waypoint = currentPathChunk.navPointsList[navPointIndx].position;
-                    }
-                }
-
-                var moveDistance = Time.deltaTime * speed;
-                transform.position = Vector3.MoveTowards(transform.position, waypoint, moveDistance);
-
-                EulerAngles = Quaternion.LookRotation(waypoint - transform.position).eulerAngles;
-            }
-        }
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(EulerAngles), 2 * Time.deltaTime);
-    }
-
-    private PathChunk GetNextPath()
-    {
-        if(currIndx == 0)
-        {
-            return currentPathChunk.LeftChunk;
-        }
-        else if (currIndx == 2)
-        {
-            return currentPathChunk.RightChunk;
         }
         else
         {
-            return currentPathChunk.CenterChunk;
+            PlayerAnimator.SetBool("Jump", true);
         }
 
+        Debug.DrawRay(body.transform.position, -bodyBase.transform.up * offsetY);
 
+        Gravity();
     }
 
-    static bool IsInRange(Vector3 a, Vector3 b, float range)
-    {
-        return (b - a).sqrMagnitude <= range * range;
-    }
-
-    private IEnumerator StopJump()
-    {
-        yield return new WaitForSeconds(jumpPower);
-        isJump = false;
-
-    }
-
-    private IEnumerator StopSlide()
-    {
-        yield return new WaitForSeconds(slidePower);
-        PlayerAnimator.SetBool("Slide", false);
-        collisionChecker.CapsuleCollider.height = 1.5f;
-        collisionChecker.CapsuleCollider.center = new Vector3(0, 0.3f, 0);
-        IsSlide = false;
-    }
 
     private void OnDestroy()
     {
