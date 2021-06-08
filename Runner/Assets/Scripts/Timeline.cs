@@ -7,13 +7,13 @@ using UnityEngine;
 public class Timeline : MonoBehaviour
 {
     [SerializeField] private List<TimelineEvent> timelineEvents = new List<TimelineEvent>();
-    private TimelineEvent removeevent;
+    [SerializeField] private List<TimelineEvent> removeevents = new List<TimelineEvent>();
     [SerializeField] private GameObject timelineEventPrefab;
     public TimelineEventsConfig TimelineEventsConfig;
 
     public List<TimelineEvent> TimelineEvents { get => timelineEvents; set => timelineEvents = value; }
 
-    public void AddNewTimelineEvent(string ID, double time)
+    public void AddNewTimelineEvent(string ID, double time, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(gameObject.transform);
@@ -24,7 +24,30 @@ public class Timeline : MonoBehaviour
         TimelineEvents.Add(ev);
     }
 
-    public void AddOldTimelineEvent(string ID, float seconds, string time)
+    public TimelineEvent AddNewTimelineEvent(string ID, double time, Building building, EventAtionType eventAtionType)
+    {
+        GameObject eventObj = Instantiate(timelineEventPrefab);
+        eventObj.transform.SetParent(building.transform);
+        TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
+        ev.EventID = ID;
+        ev.Seconds = (float)time;
+        ev.EventEndDate = DateTime.UtcNow.AddSeconds(time);
+
+        foreach(var b in DataProvider.Instance.buildings)
+        {
+            if(b.BuildingId == building.BuildingId)
+            {
+                b.timelineEvents.Add(ev);
+                break;
+            }
+        }
+
+        ev.building = building;
+
+        return ev;
+    }
+
+    public void AddOldTimelineEvent(string ID, float seconds, string time, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(gameObject.transform);
@@ -46,35 +69,88 @@ public class Timeline : MonoBehaviour
         TimelineEvents.Add(ev);
     }
 
-    public void RemoveNull()
+    public void LoadBuildingTimeline(Building selfBuilding)
     {
+        foreach(var ev in DataProvider.Instance.Profile.buildingsDatas)
+        {
+            if(ev.buildingID == selfBuilding.BuildingId)
+            {
+                if(ev.buildingTimeline.Count > 0)
+                {
+                    foreach(var evb in ev.buildingTimeline)
+                    {
+                        AddOldTimelineEvent(evb.EventID, evb.Seconds, evb.EventEndDate, selfBuilding, EventAtionType.AddResources);
+                    }
+                }
+            }
+        }
+    }
+
+    public void AddOldTimelineEvent(string ID, float seconds, string time, Building building, EventAtionType eventAtionType)
+    {
+        GameObject eventObj = Instantiate(timelineEventPrefab);
+        eventObj.transform.SetParent(building.transform);
+        TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
+        ev.EventID = ID;
+        ev.Seconds = (float)seconds;
+
+        string inp = time;
+        string format = "yyyy-MM-dd HH:mm:ssZ";
+        DateTime dt;
+
+        if (!DateTime.TryParseExact(inp, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+        {
+            Console.WriteLine("Nope!");
+        }
+
+        ev.EventEndDate = dt.ToUniversalTime();
+
+        foreach (var b in DataProvider.Instance.buildings)
+        {
+            if (b.BuildingId == building.BuildingId)
+            {
+                b.timelineEvents.Add(ev);
+                break;
+            }
+        }
+
+        ev.building = building;
+    }
+
+    public List<TimelineEvent> RemoveNull(List<TimelineEvent> list)
+    {
+        List<TimelineEvent> newList = new List<TimelineEvent>();
+        newList.AddRange(list);
+
         // Find Fist Null Element in O(n)
-        var count = timelineEvents.Count;
+        var count = newList.Count;
         for (var i = 0; i < count; i++)
         {
-            if (timelineEvents[i] == null)
+            if (newList[i] == null)
             {
                 // Current Position
                 int newCount = i++;
                 // Copy non-empty elements to current position in O(n)
                 for (; i < count; i++)
                 {
-                    if (timelineEvents[i] != null)
+                    if (newList[i] != null)
                     {
-                        timelineEvents[newCount++] = timelineEvents[i];
+                        newList[newCount++] = newList[i];
                     }
                 }
                 // Remove Extra Positions O(n)
-                timelineEvents.RemoveRange(newCount, count - newCount);
+                newList.RemoveRange(newCount, count - newCount);
                 break;
             }
         }
+
+        return newList;
     }
 
     [ContextMenu("AddTestTimeline")]
     public void AddTestTimeline()
     {
-        AddNewTimelineEvent(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ"), 20);
+        AddNewTimelineEvent(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ"), 20, EventAtionType.AddResources);
     }
 
     private void Start()
@@ -94,15 +170,29 @@ public class Timeline : MonoBehaviour
 
     private IEnumerator UpdateTimeline()
     {
-        RemoveNull();
+        timelineEvents = RemoveNull(timelineEvents);
 
-        if (removeevent)
+        foreach (var v in DataProvider.Instance.buildings)
         {
-            TimelineEvents.Remove(removeevent);
-            removeevent = null;
+            if (v.timelineEvents.Count > 0)
+            {
+                v.timelineEvents = RemoveNull(v.timelineEvents);
+            }
         }
 
+
         yield return new WaitForSeconds(1f);
+
+        foreach (var v in DataProvider.Instance.buildings)
+        {
+            if (v.timelineEvents.Count > 0)
+            {
+                foreach(var ev in v.timelineEvents)
+                {
+                    EventChecker(ev);
+                }
+            }
+        }
 
         if (TimelineEvents.Count > 0)
         {
@@ -111,6 +201,12 @@ public class Timeline : MonoBehaviour
                 EventChecker(v);
             }
         }
+
+        foreach (var rem in removeevents)
+        {
+            TimelineEvents.Remove(rem);
+        }
+        removeevents.Clear();
 
         StartCoroutine(UpdateTimeline());
     }
@@ -124,12 +220,10 @@ public class Timeline : MonoBehaviour
 
         if(timelineEvent.isActive)
         {
-            print(timelineEvent.EventEndDate);
-            print(DateTime.UtcNow);
             if (timelineEvent.EventEndDate <= DateTime.UtcNow)
             {
                 timelineEvent.CompliteEvent();
-                removeevent = timelineEvent;
+                removeevents.Add(timelineEvent);
             }
         }
     }

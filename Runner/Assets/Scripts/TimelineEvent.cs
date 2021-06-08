@@ -10,6 +10,8 @@ public class TimelineEvent : MonoBehaviour
     public DateTime EventEndDate;
     public float Seconds;
     public bool isActive = true;
+    public Building building;
+    public EventAtionType ActionType;
 
     private void Start()
     {
@@ -18,7 +20,18 @@ public class TimelineEvent : MonoBehaviour
 
     public virtual void CompliteEvent()
     {
-        print("Event " + EventID + " Complited");
+
+        if(building)
+        {
+            EventAction();
+            print("Event " + EventID + " in Building: " + building.BuildingId + " Complited");
+        }
+        else
+        {
+            EventAction();
+            print("Event " + EventID + " Complited");
+        }
+
         Destroy(this.gameObject, 1f);
     }
 
@@ -26,4 +39,38 @@ public class TimelineEvent : MonoBehaviour
     {
         Destroy(this.gameObject, 0.1f);
     }
+
+    public void EventAction()
+    {
+        switch(ActionType)
+        {
+            case EventAtionType.AddResources:
+                AddResourceAction();
+                break;
+            default:
+                break;
+        }
+
+
+    }
+    
+    private void AddResourceAction()
+    {
+        foreach(var rec in DataProvider.Instance.craftComponentConfigs)
+        {
+            if(rec.ComponentID == EventID)
+            {
+                DataProvider.Instance.Profile.AddResource(EventID, rec.ComponentOutValue);
+            }
+        }
+    }
+
 }
+
+
+
+public enum EventAtionType
+{
+    AddResources
+}
+

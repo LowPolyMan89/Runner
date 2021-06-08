@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3723415, g: 0.6828716, b: 0.8728956, a: 1}
+  m_IndirectSpecularColor: {r: 0.37343967, g: 0.68159425, b: 0.8718194, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9664,7 +9664,7 @@ Transform:
   - {fileID: 858372983}
   - {fileID: 1042541762}
   m_Father: {fileID: 480298576}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -238.29901, z: 0}
 --- !u!1 &444381062
 GameObject:
@@ -10643,7 +10643,6 @@ Transform:
   m_LocalPosition: {x: -4.797973, y: 7.2179365, z: 13.216247}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1700542308}
   - {fileID: 891932769}
   - {fileID: 1098369695}
   - {fileID: 1448397102}
@@ -14081,7 +14080,7 @@ Transform:
   m_LocalScale: {x: 10.5932, y: 2, z: 25.487032}
   m_Children: []
   m_Father: {fileID: 480298576}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &683533357
 GameObject:
@@ -17370,7 +17369,7 @@ Transform:
   - {fileID: 1907520725}
   - {fileID: 379726139}
   m_Father: {fileID: 480298576}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &897304996
 GameObject:
@@ -21419,7 +21418,7 @@ Transform:
   - {fileID: 2080046402}
   - {fileID: 1580221716}
   m_Father: {fileID: 480298576}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 70.808, z: 0}
 --- !u!1 &1106706109
 GameObject:
@@ -27121,6 +27120,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1406588695}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1412995135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412995136}
+  m_Layer: 0
+  m_Name: Buildings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1412995136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412995135}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1700542308}
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1414752769
 GameObject:
   m_ObjectHideFlags: 0
@@ -27793,7 +27823,7 @@ Transform:
   - {fileID: 1983031343}
   - {fileID: 2053614643}
   m_Father: {fileID: 480298576}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 163.672, z: 0}
 --- !u!1 &1456471951
 GameObject:
@@ -32737,8 +32767,10 @@ GameObject:
   - component: {fileID: 1700542307}
   - component: {fileID: 1700542306}
   - component: {fileID: 1700542305}
+  - component: {fileID: 1700542309}
+  - component: {fileID: 1700542310}
   m_Layer: 0
-  m_Name: Sawmill
+  m_Name: MainBuilding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32814,12 +32846,43 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1700542304}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.607973, y: -6.8479366, z: 1.393753}
+  m_LocalPosition: {x: -1.19, y: 0.3699999, z: 14.61}
   m_LocalScale: {x: 1.6914, y: 1.6914, z: 1.6914}
   m_Children: []
-  m_Father: {fileID: 480298576}
+  m_Father: {fileID: 1412995136}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1700542309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700542304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 827c959d8148f3145aad890ac79dd05c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildingId: Main_Building
+  BuildingLevel: 0
+  timelineEvents: []
+--- !u!114 &1700542310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700542304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acedf484eb93bff4ab8dfe689ee9c1a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  building: {fileID: 1700542309}
+  craftComponentConfigs:
+  - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+  dataProvider: {fileID: 0}
 --- !u!1 &1701623625
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,9 +20,12 @@ public class DataProvider : MonoBehaviour
     public string ProfileID;
     public EventManager EventManager;
     public float LastSessionTime;
+    public List<Building> buildings = new List<Building>();
     DateTime a;
     DateTime b;
     TimeSpan s;
+
+    public List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
 
     private void Awake()
     {
@@ -33,6 +36,48 @@ public class DataProvider : MonoBehaviour
         LocalDataManager = new LocalDataManager();
         Profile = new Profile();
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void AddBuilding(Building building)
+    {
+
+        RemoveNullBuldings();
+
+        if(!buildings.Contains(building))
+        {
+            buildings.Add(building);
+        }
+    }
+
+
+    public void RemoveNullBuldings()
+    {
+        // Find Fist Null Element in O(n)
+        var count = buildings.Count;
+        for (var i = 0; i < count; i++)
+        {
+            if (buildings[i] == null)
+            {
+                // Current Position
+                int newCount = i++;
+                // Copy non-empty elements to current position in O(n)
+                for (; i < count; i++)
+                {
+                    if (buildings[i] != null)
+                    {
+                        buildings[newCount++] = buildings[i];
+                    }
+                }
+                // Remove Extra Positions O(n)
+                buildings.RemoveRange(newCount, count - newCount);
+                break;
+            }
+        }
+    }
+
+    public List<Building> GetBuildings()
+    {
+        return buildings;
     }
 
     [ContextMenu("TestTimeSpan")]
@@ -76,6 +121,54 @@ public class DataProvider : MonoBehaviour
         return c.ToString();
     }
 
+    private void CreateNewPlayerProfile()
+    {
+        LocalDataManager.SavePlayerPrefsString("ProfileID", CreateNewUserID());
+        ProfileID = LocalDataManager.LoadPlayerPrefsString("ProfileID");
+        Profile.ProfileId = ProfileID;
+        Profile.PlayerName = "TestPlayer";
+        Profile.LastSaveDate = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
+        Profile.AddResource("Money", 100);
+        Profile.AddResource("Crystals", 100);
+        Profile.AddResource("Wood", 0);
+        Profile.AddResource("Stone", 0);
+        Profile.AddResource("Ore", 0);
+        Profile.AddResource("Planks", 0);
+        Profile.AddResource("Bricks", 0);
+        Profile.AddResource("Iron", 0);
+        Profile.OpenedPlayersId.Add("1");
+
+        Profile.BuildingsData data1 = new Profile.BuildingsData();
+        data1.buildingID = "Main_Building";
+        data1.buildingLevel = 1;
+        Profile.buildingsDatas.Add(data1);
+
+        Profile.BuildingsData data2 = new Profile.BuildingsData();
+        data2.buildingID = "Wood_Building";
+        data2.buildingLevel = 0;
+        Profile.buildingsDatas.Add(data2);
+
+        Profile.BuildingsData data3 = new Profile.BuildingsData();
+        data3.buildingID = "Stone_Building";
+        data3.buildingLevel = 0;
+        Profile.buildingsDatas.Add(data3);
+
+        Profile.BuildingsData data4 = new Profile.BuildingsData();
+        data4.buildingID = "Iron_Building";
+        data4.buildingLevel = 0;
+        Profile.buildingsDatas.Add(data4);
+
+        Profile.BuildingsData data5 = new Profile.BuildingsData();
+        data5.buildingID = "Portal_Building";
+        data5.buildingLevel = 0;
+        Profile.buildingsDatas.Add(data5);
+
+        Profile.BuildingsData data6 = new Profile.BuildingsData();
+        data6.buildingID = "Bridge_Building";
+        data6.buildingLevel = 0;
+        Profile.buildingsDatas.Add(data6);
+    }
+
     private void Start()
     {
         a = DateTime.UtcNow;
@@ -96,26 +189,7 @@ public class DataProvider : MonoBehaviour
 
         if(!LocalDataManager.CheckId("ProfileID"))
         {
-            LocalDataManager.SavePlayerPrefsString("ProfileID", CreateNewUserID());
-            ProfileID = LocalDataManager.LoadPlayerPrefsString("ProfileID");
-            Profile.ProfileId = ProfileID;
-            Profile.PlayerName = "TestPlayer";
-           // Profile.LevelData levelData = new Profile.LevelData();
-            Profile.LastSaveDate = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
-            Profile.InstallDate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
-            //levelData.LevelNumber = 1;
-            //levelData.StarsCount = 0;
-            Profile.AddResource("Money", 100);
-            Profile.AddResource("Crystals", 100);
-            Profile.AddResource("Wood", 0);
-            Profile.AddResource("Stone", 0);
-            Profile.AddResource("Ore", 0);
-            Profile.AddResource("Planks", 0);
-            Profile.AddResource("Bricks", 0);
-            Profile.AddResource("Iron", 0);
-           // Profile.LevelDatas.Add(levelData);
-            Profile.OpenedPlayersId.Add("1");
-            Profile.Collection.Add("TestItem");
+            CreateNewPlayerProfile();
 
             if (!File.Exists(Application.persistentDataPath + LocalDataManager.LoadPlayerPrefsString("ProfileID")))
             {
@@ -188,10 +262,6 @@ public class DataProvider : MonoBehaviour
 
         if(_saveLoadEnum == SaveLoadEnum.Save)
         {
-            Profile.LastSaveDate = System.DateTime.UtcNow.ToString();
-            Profile.LastSaveTime += GetTimeSpan(1);
-            LastSessionTime = GetTimeSpan(1);
-            Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
             SaveProfile();
         }
         else
@@ -223,7 +293,7 @@ public class DataProvider : MonoBehaviour
         Timeline.DropTimeline();
         foreach(var t in profile.timelineEvents)
         {
-            Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate);
+            Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate, (EventAtionType)t.Type);
         }
         Profile = profile;
     }
@@ -242,11 +312,34 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("save")]
     public void SaveProfile()
     {
-        Profile.LastSaveDate = System.DateTime.UtcNow.ToString();
-        Profile.LastSaveTime += GetTimeSpan(1);
-        LastSessionTime = GetTimeSpan(1);
-        Profile.AllTimeAfterInstall = GetAllTime(Profile.InstallDate);
         Profile.timelineEvents.Clear();
+
+        foreach(var pbc in Profile.buildingsDatas)
+        {
+            pbc.buildingTimeline.Clear();
+        }
+
+        foreach(var b in buildings)
+        {
+            foreach(var e in b.timelineEvents)
+            {
+                Profile.TimelineEventJsonOblect timelineEventJsonOblect = new Profile.TimelineEventJsonOblect();
+                timelineEventJsonOblect.EventID = e.EventID;
+                timelineEventJsonOblect.EventEndDate = e.EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
+                timelineEventJsonOblect.isActive = e.isActive;
+                timelineEventJsonOblect.Seconds = e.Seconds;
+                timelineEventJsonOblect.Type = (int)e.ActionType;
+
+                foreach(var pb in Profile.buildingsDatas)
+                {
+                    if(pb.buildingID == b.BuildingId)
+                    {
+                        pb.buildingTimeline.Add(timelineEventJsonOblect);
+                    }
+                }
+            }
+        }
+
         foreach(var t in Timeline.TimelineEvents)
         {
             Profile.TimelineEventJsonOblect timelineEventJsonOblect = new Profile.TimelineEventJsonOblect();
@@ -254,6 +347,7 @@ public class DataProvider : MonoBehaviour
             timelineEventJsonOblect.EventEndDate = t.EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
             timelineEventJsonOblect.isActive = t.isActive;
             timelineEventJsonOblect.Seconds = t.Seconds;
+            timelineEventJsonOblect.Type = (int)t.ActionType;
 
             Profile.timelineEvents.Add(timelineEventJsonOblect);
         }
@@ -308,18 +402,10 @@ public class Profile
     public string LastSaveDate;
     public List<Resource> Resources = new List<Resource>();
     public List<string> OpenedPlayersId = new List<string>();
-    public List<string> Collection = new List<string>();
     public List<TimelineEventJsonOblect> timelineEvents = new List<TimelineEventJsonOblect>();
-   // public List<LevelData> LevelDatas = new List<LevelData>();
-   // public List<LevelData> BonusLevelDatas = new List<LevelData>();
-    public List<ItemData> Items = new List<ItemData>();
-   // public List<SpecialOffer> Offers = new List<SpecialOffer>();
-   // public List<PlayerEvent> Events = new List<PlayerEvent>();
-    public float LastSaveTime;
+    public List<BuildingsData> buildingsDatas = new List<BuildingsData>();
     public int LevelWinStrick;
     public int BonusLevelWinStrick;
-    public string InstallDate;
-    public string AllTimeAfterInstall;
 
     public int GetResource(string id)
     {
@@ -331,7 +417,7 @@ public class Profile
                 val = r.Value;
             }
         }
-
+        DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return val;
     }
 
@@ -345,6 +431,7 @@ public class Profile
             {
                 isHave = true;
                 r.Value += value;
+                DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
                 return;
             }
         }
@@ -357,6 +444,8 @@ public class Profile
             Resources.Add(resource);
             return;
         }
+
+
     }
 
     public bool SubstractResource(string id, int value)
@@ -375,6 +464,7 @@ public class Profile
             }
         }
 
+        DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return isCan;
     }
 
@@ -408,6 +498,14 @@ public class Profile
     public void SaveProfileToDisk(string profileID, string data)
     {
         File.WriteAllText(Application.persistentDataPath + "/" + profileID, data);
+    }
+
+    [System.Serializable]
+    public class BuildingsData
+    {
+        public string buildingID;
+        public int buildingLevel;
+        public List<TimelineEventJsonOblect> buildingTimeline = new List<TimelineEventJsonOblect>();
     }
 
     [System.Serializable]
@@ -460,5 +558,6 @@ public class Profile
         public string EventEndDate;
         public float Seconds;
         public bool isActive = true;
+        public int Type;
     }
 }
