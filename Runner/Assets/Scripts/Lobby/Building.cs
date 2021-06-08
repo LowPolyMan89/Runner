@@ -17,9 +17,9 @@ public class Building : MonoBehaviour
     }
 
     [ContextMenu("TestEvent")]
-    public void CreateProductionEvent()
+    public void CreateProductionEvent(string productId, float time)
     {
-        TimelineEvent ev = DataProvider.Instance.Timeline.AddNewTimelineEvent("ProductMainTest", 30f, this);
+        TimelineEvent ev = DataProvider.Instance.Timeline.AddNewTimelineEvent(productId, time, this, EventAtionType.AddResources);
         //timelineEvents.Add(ev);
     } 
 

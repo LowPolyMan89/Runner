@@ -13,7 +13,7 @@ public class Timeline : MonoBehaviour
 
     public List<TimelineEvent> TimelineEvents { get => timelineEvents; set => timelineEvents = value; }
 
-    public void AddNewTimelineEvent(string ID, double time)
+    public void AddNewTimelineEvent(string ID, double time, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(gameObject.transform);
@@ -24,7 +24,7 @@ public class Timeline : MonoBehaviour
         TimelineEvents.Add(ev);
     }
 
-    public TimelineEvent AddNewTimelineEvent(string ID, double time, Building building)
+    public TimelineEvent AddNewTimelineEvent(string ID, double time, Building building, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(building.transform);
@@ -42,10 +42,12 @@ public class Timeline : MonoBehaviour
             }
         }
 
+        ev.building = building;
+
         return ev;
     }
 
-    public void AddOldTimelineEvent(string ID, float seconds, string time)
+    public void AddOldTimelineEvent(string ID, float seconds, string time, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(gameObject.transform);
@@ -77,14 +79,14 @@ public class Timeline : MonoBehaviour
                 {
                     foreach(var evb in ev.buildingTimeline)
                     {
-                        AddOldTimelineEvent(evb.EventID, evb.Seconds, evb.EventEndDate, selfBuilding);
+                        AddOldTimelineEvent(evb.EventID, evb.Seconds, evb.EventEndDate, selfBuilding, EventAtionType.AddResources);
                     }
                 }
             }
         }
     }
 
-    public void AddOldTimelineEvent(string ID, float seconds, string time, Building building)
+    public void AddOldTimelineEvent(string ID, float seconds, string time, Building building, EventAtionType eventAtionType)
     {
         GameObject eventObj = Instantiate(timelineEventPrefab);
         eventObj.transform.SetParent(building.transform);
@@ -111,6 +113,8 @@ public class Timeline : MonoBehaviour
                 break;
             }
         }
+
+        ev.building = building;
     }
 
     public List<TimelineEvent> RemoveNull(List<TimelineEvent> list)
@@ -146,7 +150,7 @@ public class Timeline : MonoBehaviour
     [ContextMenu("AddTestTimeline")]
     public void AddTestTimeline()
     {
-        AddNewTimelineEvent(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ"), 20);
+        AddNewTimelineEvent(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ"), 20, EventAtionType.AddResources);
     }
 
     private void Start()

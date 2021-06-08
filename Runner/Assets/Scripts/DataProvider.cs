@@ -25,6 +25,8 @@ public class DataProvider : MonoBehaviour
     DateTime b;
     TimeSpan s;
 
+    public List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
+
     private void Awake()
     {
         if(Instance != this)
@@ -291,7 +293,7 @@ public class DataProvider : MonoBehaviour
         Timeline.DropTimeline();
         foreach(var t in profile.timelineEvents)
         {
-            Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate);
+            Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate, (EventAtionType)t.Type);
         }
         Profile = profile;
     }
@@ -326,7 +328,8 @@ public class DataProvider : MonoBehaviour
                 timelineEventJsonOblect.EventEndDate = e.EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
                 timelineEventJsonOblect.isActive = e.isActive;
                 timelineEventJsonOblect.Seconds = e.Seconds;
-                
+                timelineEventJsonOblect.Type = (int)e.ActionType;
+
                 foreach(var pb in Profile.buildingsDatas)
                 {
                     if(pb.buildingID == b.BuildingId)
@@ -344,6 +347,8 @@ public class DataProvider : MonoBehaviour
             timelineEventJsonOblect.EventEndDate = t.EventEndDate.ToString("yyyy-MM-dd HH:mm:ssZ", CultureInfo.InvariantCulture);
             timelineEventJsonOblect.isActive = t.isActive;
             timelineEventJsonOblect.Seconds = t.Seconds;
+            timelineEventJsonOblect.Type = (int)t.ActionType;
+
             Profile.timelineEvents.Add(timelineEventJsonOblect);
         }
         Profile.SaveProfile(LocalDataManager.LoadPlayerPrefsString("ProfileID"), Profile);
@@ -412,7 +417,7 @@ public class Profile
                 val = r.Value;
             }
         }
-
+        DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return val;
     }
 
@@ -426,6 +431,7 @@ public class Profile
             {
                 isHave = true;
                 r.Value += value;
+                DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
                 return;
             }
         }
@@ -438,6 +444,8 @@ public class Profile
             Resources.Add(resource);
             return;
         }
+
+
     }
 
     public bool SubstractResource(string id, int value)
@@ -456,6 +464,7 @@ public class Profile
             }
         }
 
+        DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return isCan;
     }
 
@@ -549,5 +558,6 @@ public class Profile
         public string EventEndDate;
         public float Seconds;
         public bool isActive = true;
+        public int Type;
     }
 }

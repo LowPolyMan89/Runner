@@ -162,17 +162,16 @@ MonoBehaviour:
     LastSaveDate: 2021.05.03 04:59:36
     Resources: []
     OpenedPlayersId: []
-    Collection: []
     timelineEvents: []
-    Items: []
-    LastSaveTime: 0
+    buildingsDatas: []
     LevelWinStrick: 0
     BonusLevelWinStrick: 0
-    InstallDate: 
-    AllTimeAfterInstall: 
   ProfileID: 
   EventManager: {fileID: 0}
   LastSessionTime: 0
+  buildings: []
+  craftComponentConfigs:
+  - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
 --- !u!4 &1037829592
 Transform:
   m_ObjectHideFlags: 0
@@ -213,6 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timelineEvents: []
+  removeevents: []
   timelineEventPrefab: {fileID: 5898119381409059407, guid: d47a1879ca30add4c877d0ac23c3b723,
     type: 3}
   TimelineEventsConfig: {fileID: 11400000, guid: 79cd61e13a1517641a0a6afa28208138,
