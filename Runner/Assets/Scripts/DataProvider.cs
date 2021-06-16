@@ -26,7 +26,7 @@ public class DataProvider : MonoBehaviour
     TimeSpan s;
 
     public List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
-
+    public List<CraftComponentConfig> upgradeComponentConfigs = new List<CraftComponentConfig>();
     private void Awake()
     {
         if(Instance != this)
@@ -289,6 +289,7 @@ public class DataProvider : MonoBehaviour
     [ContextMenu("LoadProfileFromLocal")]
     public void LoadProfileFromLocal()
     {
+        print("Loading local Save data");
         Profile profile = JsonUtility.FromJson<Profile>(File.ReadAllText(Application.persistentDataPath + "/" + LocalDataManager.LoadPlayerPrefsString("ProfileID")));
         Timeline.DropTimeline();
         foreach(var t in profile.timelineEvents)
@@ -296,6 +297,7 @@ public class DataProvider : MonoBehaviour
             Timeline.AddOldTimelineEvent(t.EventID, t.Seconds, t.EventEndDate, (EventAtionType)t.Type);
         }
         Profile = profile;
+        UpdateBuildings();
     }
 
     public void LoadProfileFromServer(string data)
@@ -367,12 +369,39 @@ public class DataProvider : MonoBehaviour
          print( Profile.LoadProfile());
     }
 
+    private IEnumerator LoadBuildings()
+    {
+        print("Load Building data set");
+        yield return new WaitForSeconds(1f);
+        
+        foreach (var b in Profile.buildingsDatas)
+        {
+            foreach (var b2 in buildings)
+            {
+                if (b2.BuildingId == b.buildingID)
+                {
+                    print("Find building: " + b2.BuildingId);
+                    b2.BuildingLevel = b.buildingLevel;
+                    b2.Init();
+                }
+            }
+        }
+        print("Load Building data finish");
+    }
+
+    internal void UpdateBuildings()
+    {
+        StartCoroutine(LoadBuildings());
+    }
+
     private void OnDestroy()
     {
         SaveProfile();
         EventManager.OnSaveLoadAction -= SaveLoad;
         EventManager.OnAddCoinAction -= AddCoinToProfile;
     }
+
+
 }
 
 public class LocalDataManager
@@ -419,6 +448,21 @@ public class Profile
         }
         DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return val;
+    }
+
+
+    public void UpgradeBuilding(string buildingID, int level)
+    {
+        foreach(var b in buildingsDatas)
+        {
+            if(b.buildingID == buildingID)
+            {
+                b.buildingLevel = level;
+                DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
+                DataProvider.Instance.UpdateBuildings();
+                break;
+            }
+        }
     }
 
     public void AddResource(string id, int value)

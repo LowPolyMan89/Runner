@@ -8,6 +8,7 @@ public class Building : MonoBehaviour
     public string BuildingId;
     public int BuildingLevel;
     public List<TimelineEvent> timelineEvents = new List<TimelineEvent>();
+    public List<GameObject> buildingLevelPrefab = new List<GameObject>();
 
 
     private void Start()
@@ -21,7 +22,22 @@ public class Building : MonoBehaviour
     {
         TimelineEvent ev = DataProvider.Instance.Timeline.AddNewTimelineEvent(productId, time, this, EventAtionType.AddResources);
         //timelineEvents.Add(ev);
-    } 
+    }
 
-   
+    [ContextMenu("TestUpgrdeEvent")]
+    public void CreateUpgradeEvent(string productId, float time)
+    {
+        TimelineEvent ev = DataProvider.Instance.Timeline.AddNewTimelineEvent(productId, time, this, EventAtionType.UpgrageBuilding);
+        //timelineEvents.Add(ev);
+    }
+
+    internal void Init()
+    {
+        foreach (var v in buildingLevelPrefab)
+        {
+            v.SetActive(false);
+        }
+        print("Init " + BuildingId + " building");
+        buildingLevelPrefab[BuildingLevel].SetActive(true);
+    }
 }

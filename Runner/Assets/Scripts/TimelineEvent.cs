@@ -47,13 +47,30 @@ public class TimelineEvent : MonoBehaviour
             case EventAtionType.AddResources:
                 AddResourceAction();
                 break;
+            case EventAtionType.UpgrageBuilding:
+                UpgradeBuildingAction();
+                break;
             default:
                 break;
         }
 
 
     }
-    
+
+    private void UpgradeBuildingAction()
+    {
+        print("Upgrade building: " + EventID);
+
+        foreach (var rec in DataProvider.Instance.upgradeComponentConfigs)
+        {
+            if (rec.ComponentID == EventID)
+            {
+                DataProvider.Instance.Profile.UpgradeBuilding(rec.BuildingId, rec.ComponentOutValue);
+            }
+        }
+    }
+
+
     private void AddResourceAction()
     {
         foreach(var rec in DataProvider.Instance.craftComponentConfigs)
@@ -71,6 +88,6 @@ public class TimelineEvent : MonoBehaviour
 
 public enum EventAtionType
 {
-    AddResources
+    AddResources = 0, UpgrageBuilding
 }
 

@@ -21,6 +21,7 @@ public class Timeline : MonoBehaviour
         ev.EventID = ID;
         ev.Seconds = (float)time;
         ev.EventEndDate = DateTime.UtcNow.AddSeconds(time);
+        ev.ActionType = eventAtionType;
         TimelineEvents.Add(ev);
     }
 
@@ -32,7 +33,7 @@ public class Timeline : MonoBehaviour
         ev.EventID = ID;
         ev.Seconds = (float)time;
         ev.EventEndDate = DateTime.UtcNow.AddSeconds(time);
-
+        ev.ActionType = eventAtionType;
         foreach(var b in DataProvider.Instance.buildings)
         {
             if(b.BuildingId == building.BuildingId)
@@ -54,7 +55,7 @@ public class Timeline : MonoBehaviour
         TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
         ev.EventID = ID;
         ev.Seconds = (float)seconds;
-
+        ev.ActionType = eventAtionType;
         string inp = time;
         string format = "yyyy-MM-dd HH:mm:ssZ";
         DateTime dt;
@@ -79,7 +80,7 @@ public class Timeline : MonoBehaviour
                 {
                     foreach(var evb in ev.buildingTimeline)
                     {
-                        AddOldTimelineEvent(evb.EventID, evb.Seconds, evb.EventEndDate, selfBuilding, EventAtionType.AddResources);
+                        AddOldTimelineEvent(evb.EventID, evb.Seconds, evb.EventEndDate, selfBuilding, (EventAtionType)evb.Type);
                     }
                 }
             }
@@ -93,7 +94,7 @@ public class Timeline : MonoBehaviour
         TimelineEvent ev = eventObj.GetComponent<TimelineEvent>();
         ev.EventID = ID;
         ev.Seconds = (float)seconds;
-
+        ev.ActionType = eventAtionType;
         string inp = time;
         string format = "yyyy-MM-dd HH:mm:ssZ";
         DateTime dt;

@@ -11,6 +11,7 @@ public class CraftComponentConfig : ScriptableObject
     public int Money;
     public float CraftTime;
     public int ComponentOutValue;
+    public string BuildingId;
    
 }
 

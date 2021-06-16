@@ -172,6 +172,8 @@ MonoBehaviour:
   buildings: []
   craftComponentConfigs:
   - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+  upgradeComponentConfigs:
+  - {fileID: 11400000, guid: 7554a1295fff4d24a81dfc228b3ffd25, type: 2}
 --- !u!4 &1037829592
 Transform:
   m_ObjectHideFlags: 0
