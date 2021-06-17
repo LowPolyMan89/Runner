@@ -216,7 +216,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377582395607278227}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.19, y: 0.3699999, z: 14.61}
   m_LocalScale: {x: 1.6914, y: 1.6914, z: 1.6914}
   m_Children:
@@ -270,7 +270,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   building: {fileID: 1377582395607278230}
   craftComponentConfigs:
-  - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+  - craftComponentConfigs:
+    - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+  - craftComponentConfigs:
+    - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+    - {fileID: 11400000, guid: 7a090604211ada3419ff17d3f2061740, type: 2}
   upgradeComponentConfigs:
   - {fileID: 11400000, guid: 7554a1295fff4d24a81dfc228b3ffd25, type: 2}
   dataProvider: {fileID: 0}

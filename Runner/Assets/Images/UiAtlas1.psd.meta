@@ -4,28 +4,61 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -7789649408052484569
-    second: ButtonActive
+    second: UiAtlas1_0
   - first:
       213: 6673018461737327225
-    second: ButtonNotActive
+    second: UiAtlas1_1
   - first:
       213: -4351059641638642379
-    second: Stars_3
+    second: UiAtlas1_2
   - first:
       213: 6767454511103612229
-    second: Stars_2
+    second: UiAtlas1_3
   - first:
       213: -2597359062395885178
-    second: Stars_1
+    second: UiAtlas1_4
   - first:
       213: 8638899366783575536
-    second: HPSlide
+    second: UiAtlas1_5
   - first:
       213: -6633347415246765967
     second: UiAtlas1_6
   - first:
       213: 3157029983364281686
     second: UiAtlas1_7
+  - first:
+      213: 5075981596811928460
+    second: UiAtlas1_8
+  - first:
+      213: -8719650858510195879
+    second: UiAtlas1_9
+  - first:
+      213: -1869807920409493447
+    second: UiAtlas1_10
+  - first:
+      213: -6391759558548279769
+    second: Wood_icon
+  - first:
+      213: -7535825636456065625
+    second: Ore_icon
+  - first:
+      213: -7160495232312500271
+    second: Planks_icon
+  - first:
+      213: -7694098497767229841
+    second: Iron_icon
+  - first:
+      213: -8146749744417075796
+    second: Stone_icon
+  - first:
+      213: 3317409188618308231
+    second: Money_icon
+  - first:
+      213: 8515852060344731985
+    second: Briks_icon
+  - first:
+      213: -7908619774724951794
+    second: Crystal_icon
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -47,6 +80,7 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -55,12 +89,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -78,9 +112,12 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
@@ -135,7 +172,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ButtonActive
+      name: UiAtlas1_0
       rect:
         serializedVersion: 2
         x: 28
@@ -156,13 +193,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ButtonNotActive
+      name: UiAtlas1_1
       rect:
         serializedVersion: 2
         x: 410
         y: 1736
         width: 355
-        height: 294
+        height: 296
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -177,13 +214,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stars_3
+      name: UiAtlas1_2
       rect:
         serializedVersion: 2
-        x: 863
-        y: 1777
-        width: 406
-        height: 213
+        x: 868
+        y: 1787
+        width: 113
+        height: 116
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -198,13 +235,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stars_2
+      name: UiAtlas1_3
       rect:
         serializedVersion: 2
-        x: 1344
-        y: 1777
-        width: 380
-        height: 213
+        x: 984
+        y: 1815
+        width: 161
+        height: 167
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -219,13 +256,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stars_1
+      name: UiAtlas1_4
       rect:
         serializedVersion: 2
-        x: 1733
-        y: 1777
-        width: 315
-        height: 213
+        x: 1151
+        y: 1792
+        width: 112
+        height: 116
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -240,13 +277,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HPSlide
+      name: UiAtlas1_5
       rect:
         serializedVersion: 2
-        x: 63
-        y: 1571
-        width: 360
-        height: 81
+        x: 1349
+        y: 1792
+        width: 112
+        height: 116
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -256,6 +293,279 @@ TextureImporter:
       bones: []
       spriteID: 0f56b77043983e770800000000000000
       internalID: 8638899366783575536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UiAtlas1_6
+      rect:
+        serializedVersion: 2
+        x: 1465
+        y: 1820
+        width: 161
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 170067abbad91f3a0800000000000000
+      internalID: -6633347415246765967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UiAtlas1_7
+      rect:
+        serializedVersion: 2
+        x: 1737
+        y: 1794
+        width: 112
+        height: 117
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6557faf0b0600db20800000000000000
+      internalID: 3157029983364281686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UiAtlas1_8
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 1575
+        width: 77
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c83256c5e52817640800000000000000
+      internalID: 5075981596811928460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UiAtlas1_9
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 1574
+        width: 77
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 953e11d2eb39df680800000000000000
+      internalID: -8719650858510195879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UiAtlas1_10
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 1575
+        width: 77
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 930c7c16a9b1d06e0800000000000000
+      internalID: -1869807920409493447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Wood_icon
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 1224
+        width: 300
+        height: 300
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72ea507eb88eb47a0800000000000000
+      internalID: -6391759558548279769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ore_icon
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 1244
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a511c9928e5b6790800000000000000
+      internalID: -7535825636456065625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Planks_icon
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 913
+        width: 300
+        height: 300
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1df922e268fc0ac90800000000000000
+      internalID: -7160495232312500271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Iron_icon
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 956
+        width: 250
+        height: 250
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f66b7bd6e22193590800000000000000
+      internalID: -7694098497767229841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stone_icon
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 600
+        width: 300
+        height: 300
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cad0402554ee0fe80800000000000000
+      internalID: -8146749744417075796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Money_icon
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 631
+        width: 250
+        height: 250
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78a0636a41ec90e20800000000000000
+      internalID: 3317409188618308231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Briks_icon
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 366
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15940a874526e2670800000000000000
+      internalID: 8515852060344731985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crystal_icon
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 309
+        width: 280
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e01b3ef6730fe3290800000000000000
+      internalID: -7908619774724951794
       vertices: []
       indices: 
       edges: []

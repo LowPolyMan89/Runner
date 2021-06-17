@@ -10,6 +10,7 @@ public class TimelineEvent : MonoBehaviour
     public DateTime EventEndDate;
     public float Seconds;
     public bool isActive = true;
+    public bool isComplited = false;
     public Building building;
     public EventAtionType ActionType;
 
@@ -23,16 +24,18 @@ public class TimelineEvent : MonoBehaviour
 
         if(building)
         {
-            EventAction();
+            //EventAction();
+            isComplited = true;
             print("Event " + EventID + " in Building: " + building.BuildingId + " Complited");
         }
         else
         {
-            EventAction();
+            //EventAction();
+            isComplited = true;
             print("Event " + EventID + " Complited");
         }
 
-        Destroy(this.gameObject, 1f);
+       // Destroy(this.gameObject, 1f);
     }
 
     public void Drop()
@@ -40,6 +43,7 @@ public class TimelineEvent : MonoBehaviour
         Destroy(this.gameObject, 0.1f);
     }
 
+    [ContextMenu("EventAction")]
     public void EventAction()
     {
         switch(ActionType)
@@ -54,7 +58,7 @@ public class TimelineEvent : MonoBehaviour
                 break;
         }
 
-
+        Drop();
     }
 
     private void UpgradeBuildingAction()

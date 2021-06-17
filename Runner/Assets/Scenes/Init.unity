@@ -170,8 +170,42 @@ MonoBehaviour:
   EventManager: {fileID: 0}
   LastSessionTime: 0
   buildings: []
+  iconsItemsDatas:
+  - sprite: {fileID: -7908619774724951794, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Crystals
+    Text: 
+  - sprite: {fileID: 8515852060344731985, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Bricks
+    Text: 
+  - sprite: {fileID: -7694098497767229841, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Iron
+    Text: 
+  - sprite: {fileID: -7535825636456065625, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Ore
+    Text: 
+  - sprite: {fileID: -7160495232312500271, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Planks
+    Text: 
+  - sprite: {fileID: 3317409188618308231, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Money
+    Text: 
+  - sprite: {fileID: -8146749744417075796, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Stone
+    Text: 
+  - sprite: {fileID: -6391759558548279769, guid: 400442b9476802e429fbc265340cd1e8,
+      type: 3}
+    Id: Wood
+    Text: 
   craftComponentConfigs:
   - {fileID: 11400000, guid: e454d1baa4af04a449fb5e511f94cc4e, type: 2}
+  - {fileID: 11400000, guid: 7a090604211ada3419ff17d3f2061740, type: 2}
   upgradeComponentConfigs:
   - {fileID: 11400000, guid: 7554a1295fff4d24a81dfc228b3ffd25, type: 2}
 --- !u!4 &1037829592

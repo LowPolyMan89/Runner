@@ -5,7 +5,7 @@ using UnityEngine;
 public class Crafter : MonoBehaviour
 {
     [SerializeField] private Building building;
-    [SerializeField] private List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
+    [SerializeField] private List<CraftComponentsPerLevel> craftComponentConfigs = new List<CraftComponentsPerLevel>();
     [SerializeField] private List<CraftComponentConfig> upgradeComponentConfigs = new List<CraftComponentConfig>();
     [SerializeField] private DataProvider dataProvider;
     private List<RemoveResources> removeResources = new List<RemoveResources>();
@@ -99,7 +99,7 @@ public class Crafter : MonoBehaviour
         float craftTime = 0f;
         removeResources.Clear();
 
-        foreach(var c in craftComponentConfigs)
+        foreach(var c in craftComponentConfigs[building.BuildingLevel].craftComponentConfigs)
         {
             if(c.ComponentID != craftcomponentId)
             {
@@ -161,4 +161,10 @@ public class Crafter : MonoBehaviour
             Count = value;
         }
     }
+}
+
+[System.Serializable]
+public class CraftComponentsPerLevel
+{
+    public List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
 }

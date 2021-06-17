@@ -24,7 +24,7 @@ public class DataProvider : MonoBehaviour
     DateTime a;
     DateTime b;
     TimeSpan s;
-
+    public List<IconsItemsData> iconsItemsDatas = new List<IconsItemsData>();
     public List<CraftComponentConfig> craftComponentConfigs = new List<CraftComponentConfig>();
     public List<CraftComponentConfig> upgradeComponentConfigs = new List<CraftComponentConfig>();
     private void Awake()
@@ -354,6 +354,7 @@ public class DataProvider : MonoBehaviour
             Profile.timelineEvents.Add(timelineEventJsonOblect);
         }
         Profile.SaveProfile(LocalDataManager.LoadPlayerPrefsString("ProfileID"), Profile);
+        print("Autosave Local Profile");
     }
 
     [ContextMenu("OpenProfileFolder")]
@@ -446,7 +447,6 @@ public class Profile
                 val = r.Value;
             }
         }
-        DataProvider.Instance.SaveLoad(SaveLoadEnum.Save);
         return val;
     }
 
@@ -604,4 +604,11 @@ public class Profile
         public bool isActive = true;
         public int Type;
     }
+}
+[System.Serializable]
+public class IconsItemsData
+{
+    public Sprite sprite;
+    public string Id;
+    public string Text;
 }
