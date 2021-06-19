@@ -10,6 +10,34 @@ public class LobbyUi : MonoBehaviour
     public Transform collectionPlaceholder;
     private List<Transform> placeholders = new List<Transform>();
 
+    public Sprite GetResourceSprite(string id)
+    {
+        DataProvider _dataProvider = DataProvider.Instance;
+        Sprite _sprite = null;
+        foreach(var s in _dataProvider.iconsItemsDatas)
+        {
+            if(s.Id == id)
+            {
+                _sprite = s.sprite;
+            }
+        }
+        return _sprite;
+    }
+
+    public string GetResourceText(string id)
+    {
+        DataProvider _dataProvider = DataProvider.Instance;
+        string _text = null;
+        foreach (var s in _dataProvider.iconsItemsDatas)
+        {
+            if (s.Id == id)
+            {
+                _text = s.Text;
+            }
+        }
+        return _text;
+    }
+
     private void Start()
     {
         placeholders.Add(mapPlaceholder);

@@ -16,6 +16,8 @@ MonoBehaviour:
   needcraftComponents:
   - ComponentID: Wood
     Value: 5
+  - ComponentID: Planks
+    Value: 5
   Money: 200
   CraftTime: 20
   ComponentOutValue: 1

@@ -9,6 +9,7 @@ public class Building : MonoBehaviour
     public int BuildingLevel;
     public List<TimelineEvent> timelineEvents = new List<TimelineEvent>();
     public List<GameObject> buildingLevelPrefab = new List<GameObject>();
+    public Crafter CrafterComponent;
 
 
     private void Start()

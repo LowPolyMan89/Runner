@@ -10,6 +10,9 @@ public class Crafter : MonoBehaviour
     [SerializeField] private DataProvider dataProvider;
     private List<RemoveResources> removeResources = new List<RemoveResources>();
 
+    public List<CraftComponentConfig> UpgradeComponentConfigs { get => upgradeComponentConfigs;}
+    public List<CraftComponentsPerLevel> CraftComponentConfigs { get => craftComponentConfigs;}
+
     private void Start()
     {
         dataProvider = DataProvider.Instance;
@@ -36,7 +39,7 @@ public class Crafter : MonoBehaviour
         float craftTime = 0f;
         removeResources.Clear();
 
-        foreach (var c in upgradeComponentConfigs)
+        foreach (var c in UpgradeComponentConfigs)
         {
             if (c.ComponentID != upgradeID)
             {
@@ -99,7 +102,7 @@ public class Crafter : MonoBehaviour
         float craftTime = 0f;
         removeResources.Clear();
 
-        foreach(var c in craftComponentConfigs[building.BuildingLevel].craftComponentConfigs)
+        foreach(var c in CraftComponentConfigs[building.BuildingLevel].craftComponentConfigs)
         {
             if(c.ComponentID != craftcomponentId)
             {
