@@ -104,7 +104,7 @@ Material:
     - _Clamp: 0.37
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Contrast: 0.08
+    - _Contrast: 1
     - _Cull: 0
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -115,14 +115,14 @@ Material:
     - _Glossiness: 0
     - _GlossinessSource: 0
     - _GlossyReflections: 0
-    - _LightIntencity: 0.95
+    - _LightIntencity: 1.03
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _Power: 0.42
+    - _Power: 1.07
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowOffset: 0
+    - _ShadowOffset: 1.37
     - _Shininess: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0

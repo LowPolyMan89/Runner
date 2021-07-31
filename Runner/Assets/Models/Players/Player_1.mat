@@ -103,11 +103,12 @@ Material:
     - _Blend: 0
     - _BumpScale: 1
     - _Clamp: 0.67
-    - _Contrast: 2.08
+    - _Contrast: 0.71
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _Float0: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
