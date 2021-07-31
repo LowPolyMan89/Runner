@@ -456,6 +456,7 @@ MonoBehaviour:
   ignoredIsGrowndObjects:
   - DeadZone
   cameraLookAtPoint: {fileID: 7187449379454116076}
+  cameraTurnSpeed: 2
   Velocity: 0
 --- !u!114 &9118951636531599929
 MonoBehaviour:
@@ -469,7 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4ebe75401108442bb019b66a72c0ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkAngleTest: 5
+  chunkAngleTest: 2
   navPointIndx: 0
   currentPathChunk: {fileID: 0}
   isJump: 0

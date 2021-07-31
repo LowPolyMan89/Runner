@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isPause = false;
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
     [SerializeField] private Transform cameraLookAtPoint;
+    [SerializeField] private float cameraTurnSpeed;
 
     private float acceleration;
     public float Velocity;
@@ -83,7 +84,7 @@ public class Player : MonoBehaviour
     {
         if(Vector3.Distance(newCameraPosition, Camera.main.transform.localPosition) > 0.2f)
         {
-            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition , newCameraPosition, Time.deltaTime * 2f);
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition , newCameraPosition, Time.deltaTime * cameraTurnSpeed);
         }
     }
 

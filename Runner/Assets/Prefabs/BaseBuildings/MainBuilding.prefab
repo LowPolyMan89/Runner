@@ -256,6 +256,7 @@ MonoBehaviour:
   buildingLevelPrefab:
   - {fileID: 5026811360564451233}
   - {fileID: 3413035059722752971}
+  CrafterComponent: {fileID: 0}
 --- !u!114 &1377582395607278229
 MonoBehaviour:
   m_ObjectHideFlags: 0
