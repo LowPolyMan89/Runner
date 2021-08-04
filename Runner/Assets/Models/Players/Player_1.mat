@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Player_1
-  m_Shader: {fileID: 4800000, guid: ee0274d5f23b5fa4fb94188f43ba7efe, type: 3}
+  m_Shader: {fileID: 4800000, guid: 0b3e5f3496d59cd40955838a7851c985, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -102,8 +102,11 @@ Material:
     - _AlphaCutoff: 0.5
     - _Blend: 0
     - _BumpScale: 1
-    - _Clamp: 0.67
-    - _Contrast: 0.71
+    - _Clamp: 0.78
+    - _ClampMax: 1
+    - _ClampMin: 0.683
+    - _Contrast: 2.05
+    - _CounterSmooth: 2.82
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -113,7 +116,7 @@ Material:
     - _Glossiness: 0.5
     - _GlossinessSource: 0
     - _GlossyReflections: 1
-    - _LightIntencity: 1
+    - _LightIntencity: -56.22
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -121,7 +124,10 @@ Material:
     - _Power: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowOffset: 0.18
+    - _ShadowDarkness: 0.384
+    - _ShadowIntensity: 0.682
+    - _ShadowOffset: 1
+    - _ShadowSmooth: 5.05
     - _Shininess: 0.01
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
@@ -131,7 +137,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _UVSec: 0
-    - _Width: 0.02
+    - _Width: 0.022
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
@@ -140,10 +146,14 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 0, g: 0, b: 0, a: 1}
     - _Color3: {r: 0, g: 0, b: 0, a: 0}
+    - _ContureLightColor: {r: 0.06301175, g: 0.18209985, b: 0.2264151, a: 0}
+    - _ContureLitgthDirection: {r: -47.02, g: -9.4, b: 81.06, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _LightColor: {r: 0.9904841, g: 1, b: 0.9103774, a: 0}
     - _LightDirection: {r: -6.07, g: 56.2, b: 12.5, a: 0}
     - _MainColor: {r: 0.9528302, g: 0.5348434, b: 0.5348434, a: 1}
+    - _MainLitgthDirection: {r: 15.1, g: 6.5, b: -16.37, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpecularColor: {r: 0, g: 0, b: 0, a: 1}
