@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerMoveController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerMoveController : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private Transform[] points = new Transform[3];
 
+    private float oldJumpGravity = 0f;
 
     public Transform MoveTransform { get => moveTransform; set => moveTransform = value; }
     public float PlayerSpeed { get => playerSpeed; set => playerSpeed = value; }
@@ -50,7 +52,7 @@ public class PlayerMoveController : MonoBehaviour
         if (playerSpeed > 0)
         {
             PlayerAnimator.SetFloat("Speed", playerSpeed);
-            if (XAxis > 0.8f)
+            if (XAxis > 0.8f && !isJump)
             {
 
                 int nextIndx = positionIndx;
@@ -72,7 +74,7 @@ public class PlayerMoveController : MonoBehaviour
 
             }
 
-            if (XAxis < -0.8f)
+            if (XAxis < -0.8f && !isJump)
             {
 
                 int nextIndx = positionIndx;
@@ -201,6 +203,25 @@ public class PlayerMoveController : MonoBehaviour
         player.CollisionChecker.CapsuleCollider.height = 1.5f;
         player.CollisionChecker.CapsuleCollider.center = new Vector3(0, 0.3f, 0);
         IsSlide = false;
+    }
+
+    public void PodJump(JumpPod src)
+    {
+        StartCoroutine(PodJumRoutine(src.JumpTime, src.JumpGravity));
+    }
+
+    private IEnumerator PodJumRoutine(float jumpTime, float gravity)
+    {
+        isGrounded = false;
+        isJump = true;
+        PlayerAnimator.SetBool("Jump", true);
+        oldJumpGravity = player.JumpGravity;
+        player.JumpGravity = gravity;
+
+        yield return new WaitForSeconds(jumpTime);
+
+        player.JumpGravity = oldJumpGravity;
+        isJump = false;
     }
 
     private PathChunk GetNextPath()

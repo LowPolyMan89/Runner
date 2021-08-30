@@ -457,6 +457,7 @@ MonoBehaviour:
   - DeadZone
   cameraLookAtPoint: {fileID: 7187449379454116076}
   cameraTurnSpeed: 2
+  jumpGravity: 10
   Velocity: 0
 --- !u!114 &9118951636531599929
 MonoBehaviour:

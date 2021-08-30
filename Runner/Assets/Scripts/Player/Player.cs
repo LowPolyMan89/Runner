@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     [SerializeField] private List<string> ignoredIsGrowndObjects = new List<string>();
     [SerializeField] private Transform cameraLookAtPoint;
     [SerializeField] private float cameraTurnSpeed;
+    [SerializeField] private float jumpGravity;
 
     private float acceleration;
     public float Velocity;
@@ -46,6 +47,7 @@ public class Player : MonoBehaviour
     public PlayerMoveController MoveController { get => moveController; set => moveController = value; }
     public Transform CameraLookAtPoint { get => cameraLookAtPoint; set => cameraLookAtPoint = value; }
     public float Speed { get => speed; set => speed = value; }
+    public float JumpGravity { get => jumpGravity; set => jumpGravity = value; }
 
     void Awake()
     {
@@ -77,6 +79,12 @@ public class Player : MonoBehaviour
         {
             speed = _casheSpeed;
         }
+    }
+
+    public GameObject PodJump(GameObject pod)
+    {
+        moveController.PodJump(pod.gameObject.GetComponent<JumpPod>());
+        return pod;
     }
 
 
@@ -191,12 +199,12 @@ public class Player : MonoBehaviour
         if(!moveController.IsJump)
         {
             if(!moveController.IsGrounded)
-                bodyBase.transform.position += -Vector3.up * Time.deltaTime * 10f;
+                bodyBase.transform.position += -Vector3.up * Time.deltaTime * 20f;
         }
         else
         {
             
-            bodyBase.transform.position += Vector3.up * Time.deltaTime * 10f;
+            bodyBase.transform.position += Vector3.up * Time.deltaTime * jumpGravity;
         }
     }
 
