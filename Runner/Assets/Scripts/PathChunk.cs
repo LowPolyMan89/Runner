@@ -21,4 +21,17 @@ public class PathChunk : MonoBehaviour
             navPointsList.Add(t);
         }
     }
+
+    [ContextMenu("ReversPath")]
+    public void ReversPath()
+    {
+        int startIndex = transform.childCount;
+       
+
+        foreach(Transform t in transform.GetComponentsInChildren<Transform>())
+        {
+            t.SetSiblingIndex(startIndex);
+            startIndex--;
+        }
+    }
 }
