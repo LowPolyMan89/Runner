@@ -3914,7 +3914,7 @@ GameObject:
   - component: {fileID: 538765717}
   - component: {fileID: 538765716}
   m_Layer: 0
-  m_Name: JumpPod (1)
+  m_Name: 'JumpPod '
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
