@@ -7,8 +7,6 @@ public class PlayerMoveController : MonoBehaviour
 {
     private Transform moveTransform;
     private float playerSpeed;
-    private float xAxis;
-    private float yAxis;
     private int positionIndx = 1;
     private Transform body;
     private Vector3 EulerAngles;
@@ -29,8 +27,6 @@ public class PlayerMoveController : MonoBehaviour
 
     public Transform MoveTransform { get => moveTransform; set => moveTransform = value; }
     public float PlayerSpeed { get => playerSpeed; set => playerSpeed = value; }
-    public float XAxis { get => xAxis; set => xAxis = value; }
-    public float YAxis { get => yAxis; set => yAxis = value; }
     public int PositionIndx { get => positionIndx; set => positionIndx = value; }
     public bool IsCanMoveBool { get => isCanMove; set => isCanMove = value; }
     public bool IsJump { get => isJump; set => isJump = value; }
@@ -40,85 +36,97 @@ public class PlayerMoveController : MonoBehaviour
     public Transform Body { get => body; set => body = value; }
     public PathChunk CurrentPathChunk { get => currentPathChunk; set => currentPathChunk = value; }
 
+    public EventManager eventManager;
+
     private void Start()
     {
+        eventManager = GameObject.FindObjectOfType<EventManager>();
+        eventManager.OnSwipeAction += SwipeAction;
         MoveAnimator.SetInteger("Move", positionIndx);
+    }
+
+    public SwipeEnum SwipeAction(SwipeEnum swipeEnum)
+    {
+
+        if (swipeEnum == SwipeEnum.Right && !isJump)
+        {
+
+            int nextIndx = positionIndx;
+            nextIndx++;
+
+            if (points.Length - 1 >= nextIndx)
+            {
+                if (IsCanMove(Vector3.left))
+                {
+                    if (isCanMove)
+                    {
+                        StartCoroutine(IsMove());
+                        positionIndx = nextIndx;
+                        MoveAnimator.SetInteger("Move", positionIndx);
+                        PlayerAnimator.SetInteger("Move", 1);
+                    }
+                }
+            }
+
+        }
+
+        if (swipeEnum == SwipeEnum.Left && !isJump)
+        {
+
+            int nextIndx = positionIndx;
+            nextIndx--;
+
+            if (nextIndx >= 0)
+            {
+                if (IsCanMove(Vector3.right))
+                {
+                    if (isCanMove)
+                    {
+                        StartCoroutine(IsMove());
+                        positionIndx = nextIndx;
+                        MoveAnimator.SetInteger("Move", positionIndx);
+                        PlayerAnimator.SetInteger("Move", -1);
+                    }
+                }
+
+            }
+
+        }
+
+        if (swipeEnum == SwipeEnum.Up)
+        {
+            if (!isJump && isGrounded)
+            {
+                isGrounded = false;
+                isJump = true;
+                PlayerAnimator.SetBool("Jump", true);
+                StartCoroutine(StopJump());
+            }
+        }
+
+        if (swipeEnum == SwipeEnum.Down)
+        {
+            if (!isJump && isGrounded)
+            {
+                IsSlide = true;
+                PlayerAnimator.SetBool("Slide", true);
+                player.CollisionChecker.CapsuleCollider.height = 0f;
+                player.CollisionChecker.CapsuleCollider.center = new Vector3(0, 0, 0);
+                StartCoroutine(StopSlide());
+            }
+        }
+
+        return swipeEnum;
     }
 
     private void Update()
     {
         playerSpeed = player.Speed;
+        PlayerAnimator.SetFloat("Speed", playerSpeed);
 
         if (playerSpeed > 0)
         {
-            PlayerAnimator.SetFloat("Speed", playerSpeed);
-            if (XAxis > 0.8f && !isJump)
-            {
-
-                int nextIndx = positionIndx;
-                nextIndx++;
-
-                if (points.Length - 1 >= nextIndx)
-                {
-                    if (IsCanMove(Vector3.left))
-                    {
-                        if (isCanMove)
-                        {
-                            StartCoroutine(IsMove());
-                            positionIndx = nextIndx;
-                            MoveAnimator.SetInteger("Move", positionIndx);
-                            PlayerAnimator.SetInteger("Move", 1);
-                        }
-                    }
-                }
-
-            }
-
-            if (XAxis < -0.8f && !isJump)
-            {
-
-                int nextIndx = positionIndx;
-                nextIndx--;
-
-                if (nextIndx >= 0)
-                {
-                    if (IsCanMove(Vector3.right))
-                    {
-                        if (isCanMove)
-                        {
-                            StartCoroutine(IsMove());
-                            positionIndx = nextIndx;
-                            MoveAnimator.SetInteger("Move", positionIndx);
-                            PlayerAnimator.SetInteger("Move", -1);
-                        }
-                    }
-
-                }
-
-            }
-
-            if (YAxis > 0.8f)
-            {
-                if (!isJump && isGrounded)
-                {
-                    isGrounded = false;
-                    isJump = true;
-                    PlayerAnimator.SetBool("Jump", true);
-                    StartCoroutine(StopJump());
-                }
-            }
-
-            if (YAxis < -0.8f)
-            {
-                if (!isJump && isGrounded)
-                {
-                    IsSlide = true;
-                    PlayerAnimator.SetBool("Slide", true);
-                    player.CollisionChecker.CapsuleCollider.height = 0f;
-                    player.CollisionChecker.CapsuleCollider.center = new Vector3(0, 0, 0);
-                    StartCoroutine(StopSlide());
-                }
-            }
+           
         }
 
         if (currentPathChunk)
@@ -243,5 +251,10 @@ public class PlayerMoveController : MonoBehaviour
     static bool IsInRange(Vector3 a, Vector3 b, float range)
     {
         return (b - a).sqrMagnitude <= range * range;
+    }
+
+    private void OnDestroy()
+    {
+        eventManager.OnSwipeAction -= SwipeAction;
     }
 }

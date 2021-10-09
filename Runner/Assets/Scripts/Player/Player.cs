@@ -163,6 +163,11 @@ public class Player : MonoBehaviour
                 }
                 Destroy(triggerCam.gameObject);
                 break;
+
+            case "Tutorial":
+                TutorialTrigger tutorialTrigger = contactcollider.GetComponent<TutorialTrigger>();
+                tutorialTrigger.Contact();
+                break;
         }
     }
 
@@ -212,8 +217,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveController.XAxis = Input.GetAxis("Horizontal");
-        moveController.YAxis = Input.GetAxis("Vertical");
 
         RaycastHit hit;
 

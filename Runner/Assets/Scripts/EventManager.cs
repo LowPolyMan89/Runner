@@ -13,6 +13,7 @@ public class EventManager : MonoBehaviour
     public event Func<string, string> OnLevelWinAction;
     public event Func<string, string> OnLevelFailAction;
     public event Func<SaveLoadEnum, SaveLoadEnum> OnSaveLoadAction;
+    public event Func<SwipeEnum, SwipeEnum> OnSwipeAction;
 
     public delegate int AddCoinAction(int value);
     public event AddCoinAction OnAddCoinAction;
@@ -85,6 +86,15 @@ public class EventManager : MonoBehaviour
         return value;
     }
 
+    public SwipeEnum SwipeAction(SwipeEnum value)
+    {
+        if (OnSwipeAction != null)
+        {
+            OnSwipeAction(value);
+        }
+        return value;
+    }
+
     public void CoinCollectAction()
     {
         if (OnCoinCollectAction != null)
@@ -102,4 +112,9 @@ public class EventManager : MonoBehaviour
 public enum SaveLoadEnum
 {
     Save,Load
+}
+
+public enum SwipeEnum
+{
+    Up,Down,Left,Right
 }

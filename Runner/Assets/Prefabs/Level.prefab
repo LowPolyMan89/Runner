@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: PlayerSpawn
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7936201994947520173}
   m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: -26.682858, y: -8.40084, z: -2.1648827}
+  m_LocalPosition: {x: -26.767, y: -8.40084, z: 3.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7936201996063213138}
@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 7936201996063213138}
   - component: {fileID: 7936201996063213133}
   - component: {fileID: 7936201996063213139}
+  - component: {fileID: 8649310922482293342}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -75,13 +76,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fee2aa2cad989d40a78647bdc2d2b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelId: 
+  levelId: 1
   coinCollectCount: 0
   playerHitPoint: 1
   levelStars: 3
   finalLevelCoins: 0
   coinCount: 0
-  starsCoinRange: {x: 0, y: 0, z: 0}
+  starsCoinRange: {x: 5, y: 10, z: 17}
   finalStars: 0
 --- !u!114 &7936201996063213139
 MonoBehaviour:
@@ -95,9 +96,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0929000621c5b7944bbbf249453068e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabID: Player
+  playerPrefabID: 1
   player: {fileID: 0}
   playerSpawn: {fileID: 7936201994947520178}
   levelStats: {fileID: 0}
   navPointsParent: {fileID: 0}
   chunk: {fileID: 0}
+--- !u!114 &8649310922482293342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7936201996063213132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5eafabadcd73d41a100cc4734f7d52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventManager: {fileID: 0}
+  XAxis: 0
+  YAxis: 0
+  isTutorial: 1
+  currentTutorialTrigger: {fileID: 0}
+  player: {fileID: 0}
