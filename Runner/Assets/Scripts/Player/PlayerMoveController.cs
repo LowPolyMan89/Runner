@@ -24,6 +24,7 @@ public class PlayerMoveController : MonoBehaviour
     [SerializeField] private Transform[] points = new Transform[3];
 
     private float oldJumpGravity = 0f;
+    private float localJumpPodTime = 0f;
 
     public Transform MoveTransform { get => moveTransform; set => moveTransform = value; }
     public float PlayerSpeed { get => playerSpeed; set => playerSpeed = value; }
@@ -222,6 +223,7 @@ public class PlayerMoveController : MonoBehaviour
     {
         isGrounded = false;
         isJump = true;
+        localJumpPodTime = jumpTime;
         PlayerAnimator.SetBool("Jump", true);
         oldJumpGravity = player.JumpGravity;
         player.JumpGravity = gravity;
@@ -231,6 +233,7 @@ public class PlayerMoveController : MonoBehaviour
         player.JumpGravity = oldJumpGravity;
         isJump = false;
     }
+
 
     private PathChunk GetNextPath()
     {
